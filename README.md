@@ -1,39 +1,39 @@
+Reverently borrowed from the beautifully crafted [Moloch DAO](https://github.com/MolochVentures/moloch/). Enabling all those energetically supersticiously inclined to discuss governance models without casually invoking the name of a powerful demonic deity.
 
-STEAL THIS CODE
+## Mollusk V2
+![WORSHIP NOTHING](https://www.sciencealert.com/images/2017-04/processed/octopus-cephalopod-rna-evolution_1024.jpg)
 
-# Moloch v2
-![Worship Moloch](https://cdn.discordapp.com/attachments/583914506389028865/641047975421804584/2019-11-04_14.55.39.jpg)
 
-> Moloch whose love is endless oil and stone! Moloch whose soul is electricity and banks! Moloch whose poverty is the specter of genius! Moloch whose fate is a cloud of sexless hydrogen! Moloch whose name is the Mind!
+> Mollusk whose love is endless oil and stone! Mollusk whose soul is electricity and banks! Mollusk whose poverty is the specter of genius! Mollusk whose fate is a cloud of sexless hydrogen! Mollusk whose name is the Mind!
 
-> Moloch! Moloch! Robot apartments! invisible suburbs! skeleton treasuries! blind capitals! demonic industries! spectral nations! invincible madhouses! granite cocks! monstrous bombs!
+> Mollusk! Mollusk! Robot apartments! invisible suburbs! skeleton treasuries! blind capitals! demonic industries! spectral nations! invincible madhouses! granite cocks! monstrous bombs!
 
-~ Allen Ginsberg, Howl
+~ Allen "Under the Sea" Ginsberg, Howl
 
-Moloch v2 is an upgraded version of MolochDAO that allows the DAO to acquire and spend multiple different tokens, instead of just one. It introduces the Guild Kick proposal type which allows members to forcibly remove another member (their assets are refunded in full). It also also allows for issuing non-voting shares in the form of Loot. Finally, v2 fixes the "unsafe approval" issue raised in the original [Nomic Labs audit](https://medium.com/nomic-labs-blog/moloch-dao-audit-report-f31505e85c70).
+Mollusk v2 is an upgraded version of MolluskDAO that allows the DAO to acquire and spend multiple different tokens, instead of just one. It introduces the Guild Kick proposal type which allows members to forcibly remove another member (their assets are refunded in full). It also also allows for issuing non-voting shares in the form of Loot. Finally, v2 fixes the "unsafe approval" issue raised in the original [Nomic Labs audit](https://medium.com/nomic-labs-blog/moloch-dao-audit-report-f31505e85c70).
 
-For a primer on Moloch v1, please visit the [original documentation](https://github.com/MolochVentures/moloch/tree/minimal-revenue/v1_contracts).
+For a primer on Mollusk v1, please visit the [original documentation](https://github.com/MolochVentures/moloch/tree/minimal-revenue/v1_contracts).
 
 ## Design Principles
-In developing Moloch v2, we stuck with our ruthless minimalism, deviating as little as possible from the original while dramatically improving utility. We skipped many features again and believe our design represents a Minimally Viable For-Profit DAO, yet one flexible enough to support a variety of use decentralized cases, including venture funds, hedge funds, investment banks, and incubators.
+In developing Mollusk v2, we stuck with our ruthless minimalism, deviating as little as possible from the original while dramatically improving utility. We skipped many features again and believe our design represents a Minimally Viable For-Profit DAO, yet one flexible enough to support a variety of use decentralized cases, including venture funds, hedge funds, investment banks, and incubators.
 
 ## Overview
 
-Moloch v2 is designed to extend MolochDAO's operations from purely single-token public goods grants-making to acquiring and spending (or investing in) an unlimited portfolio of assets.
+Mollusk v2 is designed to extend MolluskDAO's operations from purely single-token public goods grants-making to acquiring and spending (or investing in) an unlimited portfolio of assets.
 
-Proposals in Moloch v2 now specify a **tribute token** and a **payment token**, which can be any whitelisted ERC20. Membership proposals which offer tribute tokens in exchange for shares can now offer any token, possibly helping balance the DAO portfolio. Grant proposals can now be in both shares and a stablecoin payment token to smooth out volatility risk, or even skip shares entirely to pay external contractors without awarding membership. Members can also propose *trades* to swap tokens OTC with the guild bank, which could be used for making investments, active portfolio management, selloffs, or just to top off a stablecoin reserve used to pay for planned expenses.
+Proposals in Mollusk v2 now specify a **tribute token** and a **payment token**, which can be any whitelisted ERC20. Membership proposals which offer tribute tokens in exchange for shares can now offer any token, possibly helping balance the DAO portfolio. Grant proposals can now be in both shares and a stablecoin payment token to smooth out volatility risk, or even skip shares entirely to pay external contractors without awarding membership. Members can also propose *trades* to swap tokens OTC with the guild bank, which could be used for making investments, active portfolio management, selloffs, or just to top off a stablecoin reserve used to pay for planned expenses.
 
 In addition to standard proposals above, there are two special proposals. The first is for whitelisting new tokens to be eligible as tribute, and the second is for removing DAO members via Guild Kick. Both follow the same voting mechanics as standard proposals (no quorum, simple majority rules).
 
-### MolochLAO
+### MolluskLAO
 
-In order to limit legal liability on members of a for-profit deployment of Moloch v2, the members may opt to form a [LAO](https://www.thelao.io/). LAOs are DAOs wrapped in a legally compliant entity, such as an LLC or C-Corp. The LAO can enter legal contracts, custody offchain assets (e.g. SAFTs), and distribute dividends. Investors in a LAO must be accredited, but service providers compensated in LAO shares can earn their shares of the LAO portfolio.
+In order to limit legal liability on members of a for-profit deployment of Mollusk v2, the members may opt to form a [LAO](https://www.thelao.io/). LAOs are DAOs wrapped in a legally compliant entity, such as an LLC or C-Corp. The LAO can enter legal contracts, custody offchain assets (e.g. SAFTs), and distribute dividends. Investors in a LAO must be accredited, but service providers compensated in LAO shares can earn their shares of the LAO portfolio.
 
-The current Moloch v2 contract standard was designed through a [collaborative effort](https://medium.com/@thelaoofficial/the-lao-joins-forces-with-moloch-dao-and-metacartel-to-begin-to-standardize-dao-related-smart-b6ee4b0db071) between MetaCartel, ConsenSys’s The LAO, and Moloch. The MetaCartel [Venture DAO](https://twitter.com/venture_dao) is expected to be the first deployment of Moloch v2 and blaze the trail for other for-profit DAOs to follow. Check out the Venture DAO [whitepaper](https://github.com/metacartel/MCV/blob/master/MCV-Whitepaper.md) for more information.
+The current Mollusk v2 contract standard was designed through a [collaborative effort](https://medium.com/@thelaoofficial/the-lao-joins-forces-with-moloch-dao-and-metacartel-to-begin-to-standardize-dao-related-smart-b6ee4b0db071) between MetaCartel, ConsenSys’s The LAO, and Mollusk. The MetaCartel [Venture DAO](https://twitter.com/venture_dao) is expected to be the first deployment of Mollusk v2 and blaze the trail for other for-profit DAOs to follow. Check out the Venture DAO [whitepaper](https://github.com/metacartel/MCV/blob/master/MCV-Whitepaper.md) for more information.
 
 ##### Security Tokens
 
-To interface with offchain securities like SAFTs, the MolochLAO will issue security tokens that follow the Claims Token Standard [ERC-1843](https://github.com/ethereum/EIPs/issues/1843) and the Simple Restricted Token Standard [ERC-1404](https://github.com/ethereum/EIPs/issues/1404). Upon distribution of the SAFT tokens, the LAO custodian would send them to the claims token contract to be distributed to the claims token holders.
+To interface with offchain securities like SAFTs, the MolluskLAO will issue security tokens that follow the Claims Token Standard [ERC-1843](https://github.com/ethereum/EIPs/issues/1843) and the Simple Restricted Token Standard [ERC-1404](https://github.com/ethereum/EIPs/issues/1404). Upon distribution of the SAFT tokens, the LAO custodian would send them to the claims token contract to be distributed to the claims token holders.
 
 For equity, debt, or other revenue yielding securities the LAO custodian would receive the proceeds, liquidate to a token suitable for dividends (e.g. DAI) and then send the dividend tokens to the claims token contract to be distributed to the claims token holders.
 
@@ -51,7 +51,7 @@ To tests the contracts run `npm run test`.
 
 To compute their code coverage run `npm run coverage`.
 
-## Deploying an interacting with a Moloch DAO and a Pool
+## Deploying an interacting with a Mollusk DAO and a Pool
 
 This project includes Hardhat tasks for deploying and using DAOs and Pools.
 
@@ -91,7 +91,7 @@ AVAILABLE TASKS:
   console                       Opens a hardhat console
   flatten                       Flattens and prints all contracts and their dependencies
   help                          Prints this message
-  moloch-deploy                 Deploys a new instance of the Moloch DAO
+  moloch-deploy                 Deploys a new instance of the Mollusk DAO
   moloch-process-proposal       Processes a proposal
   moloch-ragequit               Ragequits, burning some shares and getting tokens back
   moloch-submit-proposal        Submits a proposal
@@ -132,7 +132,7 @@ For global options help run: hardhat help
 # Changelog v2
 
 ![Many
-Molochs](https://cdn.discordapp.com/attachments/583914506389028865/643303589254529025/molochs.jpeg)
+Mollusks](https://cdn.discordapp.com/attachments/583914506389028865/643303589254529025/molochs.jpeg)
 
 > To expect God to care about you or your personal values or the values of your civilization, that’s hubris.
 
@@ -144,11 +144,11 @@ Molochs](https://cdn.discordapp.com/attachments/583914506389028865/6433035892545
 
 > I am a transhumanist because I do not have enough hubris not to try to kill God.
 
-~ Scott Alexander, [Meditations on Moloch](http://slatestarcodex.com/2014/07/30/meditations-on-moloch/)
+~ Scott Alexander, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-moloch/)
 
-Moloch v2 is minimally different from Moloch v1, please read the [original documentation](https://github.com/MolochVentures/moloch/tree/master/v1_contracts) first, and then the changelog below.
+Mollusk v2 is minimally different from Mollusk v1, please read the [original documentation](https://github.com/MolochVentures/moloch/tree/master/v1_contracts) first, and then the changelog below.
 
-## Moloch.sol
+## Mollusk.sol
 
 ### General Changes
 
@@ -171,7 +171,7 @@ struct Proposal {
 
 ### Pull Pattern
 
-In order to mitigate a number of potential vulnerabilities around token transfers, all token transfers now follow the "pull pattern". This means that functions that would have previously called into an ERC20 token contract to move a balance now simply update an internal record of token balances instead. This prevents suddenly implemented token transfer restrictions from halting the proper execution of `Moloch.sol`, especially the `processProposal` function.
+In order to mitigate a number of potential vulnerabilities around token transfers, all token transfers now follow the "pull pattern". This means that functions that would have previously called into an ERC20 token contract to move a balance now simply update an internal record of token balances instead. This prevents suddenly implemented token transfer restrictions from halting the proper execution of `Mollusk.sol`, especially the `processProposal` function.
 
 **As a result, the `GuildBank.sol` contract has been removed.**
 
@@ -184,7 +184,7 @@ We add the nested mapping `userTokenBalances` to track balances by user & token.
     address public constant ESCROW = address(0xbeef);
     mapping (address => mapping(address => uint256)) public userTokenBalances;
 ```
-The Guild balance is the sum of accepted tributes and would have previously been held in the `GuildBank.sol` contract, and the Escrow balance is the sum of pending tributes and would have previously been held on the `Moloch.sol` contract. A user's balance is the sum of token payments, ragequit proceeds, processor rewards, and returns proposal deposits that would have previously been automatically transferred to them, but is now held on their behalf until they withdraw.
+The Guild balance is the sum of accepted tributes and would have previously been held in the `GuildBank.sol` contract, and the Escrow balance is the sum of pending tributes and would have previously been held on the `Mollusk.sol` contract. A user's balance is the sum of token payments, ragequit proceeds, processor rewards, and returns proposal deposits that would have previously been automatically transferred to them, but is now held on their behalf until they withdraw.
 
 ##### `withdrawToken`
 
@@ -254,9 +254,9 @@ Track the whitelisted tokens in a mapping (to check if that token is on the whit
 
 
 ### Submit -> Sponsor Flow
-As Nomic Labs explained in their [audit report](https://medium.com/nomic-labs-blog/moloch-dao-audit-report-f31505e85c70), approving ERC20 tokens to Moloch is unsafe.
+As Nomic Labs explained in their [audit report](https://medium.com/nomic-labs-blog/moloch-dao-audit-report-f31505e85c70), approving ERC20 tokens to Mollusk is unsafe.
 
-> Approving the Moloch DAO to transfer your tokens is, in general, unsafe. Users need to approve tokens to be a proposer or an applicant, but they can end up as the applicant of an unwanted proposal if someone attacks them, as explained in [MOL-L01].
+> Approving the Mollusk DAO to transfer your tokens is, in general, unsafe. Users need to approve tokens to be a proposer or an applicant, but they can end up as the applicant of an unwanted proposal if someone attacks them, as explained in [MOL-L01].
 
 > This also has an impact in the UX, as submitting a proposal requires three transactions (2 approvals, 1 submitProposal call). This is in contrast to one of the most common UX pattern for approval, which consists of only calling approve once, with MAX_INT as value. If someone were to use that pattern, she will be in a vulnerable situation.
 
@@ -279,7 +279,7 @@ Note - as a result of this change, getting the proposal details from the proposa
 - saves proposal by ID, but **does not** add it to the `proposalQueue`
 - transfers tribute tokens from the `msg.sender` (`proposer`)
 
-Because tribute always comes from the `proposer` and not the `applicant`, there is never a situation where someone else can initiate an action to pull *your* tokens into Moloch, so you are safe to approve Moloch once for the maximum amount of any token you wish to offer as tribute.
+Because tribute always comes from the `proposer` and not the `applicant`, there is never a situation where someone else can initiate an action to pull *your* tokens into Mollusk, so you are safe to approve Mollusk once for the maximum amount of any token you wish to offer as tribute.
 
 ##### `sponsorProposal`
 - can only be called by a member
