@@ -1,7 +1,7 @@
-Reverently borrowed from the beautifully crafted [Moloch DAO](https://github.com/MolochVentures/moloch/). Enabling all those energetically supersticiously inclined to discuss governance models without casually invoking the name of a powerful demonic deity.
-
 ## Mollusk V2
 ![WORSHIP NOTHING](https://www.sciencealert.com/images/2017-04/processed/octopus-cephalopod-rna-evolution_1024.jpg)
+
+> Reverently borrowed from the beautifully crafted [Moloch DAO](https://github.com/MolochVentures/moloch/). Enabling all those energetically supersticiously inclined to discuss governance models without casually invoking the name of a powerful demonic deity.
 
 
 > Mollusk whose love is endless oil and stone! Mollusk whose soul is electricity and banks! Mollusk whose poverty is the specter of genius! Mollusk whose fate is a cloud of sexless hydrogen! Mollusk whose name is the Mind!
