@@ -132,7 +132,7 @@ For global options help run: hardhat help
 # Changelog v2
 
 ![Many
-Mollusks](https://cdn.discordapp.com/attachments/583914506389028865/643303589254529025/mollusks.jpeg)
+Mollusks](https://cdn.discordapp.com/attachments/583914506389028865/643303589254529025/molochs.jpeg)
 
 > To expect God to care about you or your personal values or the values of your civilization, that’s hubris.
 
@@ -144,9 +144,9 @@ Mollusks](https://cdn.discordapp.com/attachments/583914506389028865/643303589254
 
 > I am a transhumanist because I do not have enough hubris not to try to kill God.
 
-~ Scott Alexander, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-mollusk/)
+~ Scott Alexander, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-moloch/)
 
-Mollusk v2 is minimally different from Mollusk v1, please read the [original documentation](https://github.com/MolluskVentures/mollusk/tree/master/v1_contracts) first, and then the changelog below.
+Mollusk v2 is minimally different from Moloch v1, please read the [original documentation](https://github.com/MolochVentures/moloch/tree/master/v1_contracts) first, and then the changelog below.
 
 ## Mollusk.sol
 
