@@ -1,7 +1,7 @@
 ## Mollusk V2
 ![WORSHIP NOTHING](https://www.sciencealert.com/images/2017-04/processed/octopus-cephalopod-rna-evolution_1024.jpg)
 
-Reverently stolen from the beautifully crafted [Mollusk DAO](https://github.com/MolluskVentures/mollusk/). Enabling all those energetically & supersticiously inclined to discuss governance models without casually invoking the name of a powerful demonic deity 👼 🐙 👹
+Reverently stolen from the beautifully crafted [Moloch DAO](https://github.com/MolochVentures/moloch/). Enabling all those energetically & supersticiously inclined to discuss governance models without casually invoking the name of a powerful demonic deity 👼 🐙 👹
 
 
 > Mollusk whose love is endless oil and stone! Mollusk whose soul is electricity and banks! Mollusk whose poverty is the specter of genius! Mollusk whose fate is a cloud of sexless hydrogen! Mollusk whose name is the Mind!
@@ -10,9 +10,9 @@ Reverently stolen from the beautifully crafted [Mollusk DAO](https://github.com/
 
 ~ Allen "Under the Sea" Ginsberg, Howl
 
-Mollusk v2 is an upgraded version of MolluskDAO that allows the DAO to acquire and spend multiple different tokens, instead of just one. It introduces the Guild Kick proposal type which allows members to forcibly remove another member (their assets are refunded in full). It also also allows for issuing non-voting shares in the form of Loot. Finally, v2 fixes the "unsafe approval" issue raised in the original [Nomic Labs audit](https://medium.com/nomic-labs-blog/mollusk-dao-audit-report-f31505e85c70).
+Mollusk v2 is an upgraded version of MolluskDAO that allows the DAO to acquire and spend multiple different tokens, instead of just one. It introduces the Guild Kick proposal type which allows members to forcibly remove another member (their assets are refunded in full). It also also allows for issuing non-voting shares in the form of Loot. Finally, v2 fixes the "unsafe approval" issue raised in the original [Nomic Labs audit](https://medium.com/nomic-labs-blog/moloch-dao-audit-report-f31505e85c70).
 
-For a primer on Mollusk v1, please visit the [original documentation](https://github.com/MolluskVentures/mollusk/tree/minimal-revenue/v1_contracts).
+For a primer on Mollusk v1, please visit the [original documentation](https://github.com/MolochVentures/moloch/tree/minimal-revenue/v1_contracts).
 
 ## Design Principles
 In developing Mollusk v2, we stuck with our ruthless minimalism, deviating as little as possible from the original while dramatically improving utility. We skipped many features again and believe our design represents a Minimally Viable For-Profit DAO, yet one flexible enough to support a variety of use decentralized cases, including venture funds, hedge funds, investment banks, and incubators.
@@ -29,7 +29,7 @@ In addition to standard proposals above, there are two special proposals. The fi
 
 In order to limit legal liability on members of a for-profit deployment of Mollusk v2, the members may opt to form a [LAO](https://www.thelao.io/). LAOs are DAOs wrapped in a legally compliant entity, such as an LLC or C-Corp. The LAO can enter legal contracts, custody offchain assets (e.g. SAFTs), and distribute dividends. Investors in a LAO must be accredited, but service providers compensated in LAO shares can earn their shares of the LAO portfolio.
 
-The current Mollusk v2 contract standard was designed through a [collaborative effort](https://medium.com/@thelaoofficial/the-lao-joins-forces-with-mollusk-dao-and-metacartel-to-begin-to-standardize-dao-related-smart-b6ee4b0db071) between MetaCartel, ConsenSys’s The LAO, and Mollusk. The MetaCartel [Venture DAO](https://twitter.com/venture_dao) is expected to be the first deployment of Mollusk v2 and blaze the trail for other for-profit DAOs to follow. Check out the Venture DAO [whitepaper](https://github.com/metacartel/MCV/blob/master/MCV-Whitepaper.md) for more information.
+The current Mollusk v2 contract standard was designed through a [collaborative effort](https://medium.com/@thelaoofficial/the-lao-joins-forces-with-moloch-dao-and-metacartel-to-begin-to-standardize-dao-related-smart-b6ee4b0db071) between MetaCartel, ConsenSys’s The LAO, and Mollusk. The MetaCartel [Venture DAO](https://twitter.com/venture_dao) is expected to be the first deployment of Mollusk v2 and blaze the trail for other for-profit DAOs to follow. Check out the Venture DAO [whitepaper](https://github.com/metacartel/MCV/blob/master/MCV-Whitepaper.md) for more information.
 
 ##### Security Tokens
 

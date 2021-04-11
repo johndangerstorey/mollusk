@@ -10,7 +10,7 @@ STEAL THIS CODE
 
 Mollusk is a grant-making DAO / Guild and a radical experiment in voluntary incentive alignment to overcome the "tragedy of the commons". Our objective is to accelerate the development of public Ethereum infrastructure that many teams need but don't want to pay for on their own. By pooling our ETH, teams building on Ethereum can collectively fund open-source work we decide is in our common interest.
 
-This documentation will focus on the Mollusk DAO system design and smart contracts. For a deeper explanation of the philosophy behind Mollusk, please read our [whitepaper](https://github.com/MolluskVentures/Whitepaper/blob/master/Whitepaper.pdf) as well as the Slate Star Codex post, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-mollusk/), which served as inspiration.
+This documentation will focus on the Mollusk DAO system design and smart contracts. For a deeper explanation of the philosophy behind Moloch, please read our [whitepaper](https://github.com/MolochVentures/Whitepaper/blob/master/Whitepaper.pdf) as well as the Slate Star Codex post, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-moloch/), which served as inspiration.
 
 ## Design Principles
 
@@ -57,7 +57,7 @@ To compute their code coverage run `npm run coverage`.
 
 ## Deploying an interacting with a Mollusk DAO and a Pool
 
-This project includes Buidler tasks for deploying and using DAOs and Pools.
+This project includes hardhat tasks for deploying and using DAOs and Pools.
 
 ### Deployment
 
@@ -66,36 +66,36 @@ This project includes Buidler tasks for deploying and using DAOs and Pools.
 
 Follow this instructions to deploy a new DAO:
 
-1. Edit `buidler.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
+1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
 2. Edit `deployment-params.js`, setting your desired deployment parameters.
-3. Run `npx buidler mollusk-deploy --network mainnet`
-4. Edit `buidler.config.js`, setting the address of the DAO in `networks.mainnet.deployedContracts.mollusk`.
+3. Run `npx hardhat mollusk-deploy --network mainnet`
+4. Edit `hardhat.config.js`, setting the address of the DAO in `networks.mainnet.deployedContracts.mollusk`.
 
 #### Deploying a new Pool
 
 Follow this instructions to deploy a new Pool:
 
-1. Edit `buidler.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
-2. Make sure you have the right address in `buidler.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
-3. Run `npx buidler pool-deploy --network mainnet --shares <shares> --tokens <tokens>` with the initial amount of tokens you want to donate to the pool, and how many shares you want in return.
+1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
+2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
+3. Run `npx hardhat pool-deploy --network mainnet --shares <shares> --tokens <tokens>` with the initial amount of tokens you want to donate to the pool, and how many shares you want in return.
 
 ### Interacting with the smart contracts
 
 This project has tasks to work with DAOs and Pools. To use them, you should first follow this instructions:
 
-1. Edit `buidler.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
-2. Make sure you have the right address in `buidler.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
-3. If you want to use a Pool, make sure you have the right address in `buidler.config.js`'s `networks.mainnet.deployedContracts.pool` field.
+1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
+2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
+3. If you want to use a Pool, make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.pool` field.
 
-After following those instructions, you can run `npx buidler` to get a list with all the tasks:
+After following those instructions, you can run `npx hardhat` to get a list with all the tasks:
 
 ```
-$ npx buidler
+$ npx hardhat
 AVAILABLE TASKS:
 
   clean                         Clears the cache and deletes all artifacts
   compile                       Compiles the entire project, building all artifacts
-  console                       Opens a buidler console
+  console                       Opens a hardhat console
   flatten                       Flattens and prints all contracts and their dependencies
   help                          Prints this message
   mollusk-deploy                 Deploys a new instance of the Mollusk DAO
@@ -116,13 +116,13 @@ AVAILABLE TASKS:
 ```
 
 
-You can run `npx buidler help <task>` to get help about each tasks and their parameters. For example:
+You can run `npx hardhat help <task>` to get help about each tasks and their parameters. For example:
 
 ```
-$ npx buidler help mollusk-submit-proposal
-Buidler version 1.0.0-beta.7
+$ npx hardhat help mollusk-submit-proposal
+hardhat version 1.0.0-beta.7
 
-Usage: buidler [GLOBAL OPTIONS] mollusk-submit-proposal --applicant <STRING> --details <STRING> --shares <STRING> --tribute <STRING>
+Usage: hardhat [GLOBAL OPTIONS] mollusk-submit-proposal --applicant <STRING> --details <STRING> --shares <STRING> --tribute <STRING>
 
 OPTIONS:
 
@@ -133,7 +133,7 @@ OPTIONS:
 
 mollusk-submit-proposal: Submits a proposal
 
-For global options help run: buidler help
+For global options help run: hardhat help
 ```
 
 # Mollusk.sol
