@@ -1,7 +1,7 @@
 const BN = require('bn.js')
 
 const {
-  getDeployedMoloch,
+  getDeployedMollusk,
   getDeployedPool,
   getFirstAccount,
   getApprovedToken,
@@ -18,8 +18,8 @@ task('pool-deploy', 'Deploys a new instance of the pool and activates it')
     // Make sure everything is compiled
     await run('compile')
 
-    const moloch = await getDeployedMoloch()
-    if (moloch === undefined) {
+    const mollusk = await getDeployedMollusk()
+    if (mollusk === undefined) {
       return
     }
 
@@ -32,7 +32,7 @@ task('pool-deploy', 'Deploys a new instance of the pool and activates it')
 
     console.log(
       'Deployment parameters:\n',
-      '  Moloch DAO:', moloch.address, '\n',
+      '  Mollusk DAO:', mollusk.address, '\n',
       '  initialTokens:', tokens, '\n',
       '  initialPoolShares:', shares, '\n'
     )
@@ -45,7 +45,7 @@ task('pool-deploy', 'Deploys a new instance of the pool and activates it')
       return
     }
 
-    const Pool = artifacts.require('MolochPool')
+    const Pool = artifacts.require('MolluskPool')
     const sender = await getFirstAccount()
 
     if (!await hasEnoughTokens(token, sender, tokens)) {
@@ -58,7 +58,7 @@ task('pool-deploy', 'Deploys a new instance of the pool and activates it')
     // We set the gas manually here because of
     // https://github.com/nomiclabs/buidler/issues/272
     // TODO(@alcuadrado): Remove this when the issue gets fixed
-    const pool = await Pool.new(moloch.address, { gas: 2500000 })
+    const pool = await Pool.new(mollusk.address, { gas: 2500000 })
 
     console.log('')
     console.log('Pool deployed. Address:', pool.address)

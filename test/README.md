@@ -1,6 +1,6 @@
-# Moloch Testing Guide
+# Mollusk Testing Guide
 
-![tshirt](https://slatestarcodex.com/blog_images/moloch-tshirt.png)
+![tshirt](https://slatestarcodex.com/blog_images/mollusk-tshirt.png)
 
 > "I have a feeling," Harry said finally, "that we're coming at this from the wrong angle. There's a tale I once heard about some students who came into a physics class, and the teacher showed them a large metal plate near a fire. She ordered them to feel the metal plate, and they felt that the metal nearer the fire was cooler, and the metal further away was warmer. And she said, write down your guess for why this happens. So some students wrote down 'because of how the metal conducts heat', and some students wrote down 'because of how the air moves', and no one said 'this just seems impossible', and the real answer was that before the students came into the room, the teacher turned the plate around."
 
@@ -10,7 +10,7 @@
 
 ~ [Harry Potter and the Methods of Rationality](https://www.hpmor.com/chapter/26)
 
-This document is intended to help those interested in learning about testing solidity in general, and also to act as a guide for testing future iterations of the Moloch smart contracts. It is organized as a set of principles and, where possible, examples demonstrating their practical application.
+This document is intended to help those interested in learning about testing solidity in general, and also to act as a guide for testing future iterations of the Mollusk smart contracts. It is organized as a set of principles and, where possible, examples demonstrating their practical application.
 
 ### Test Code Quality
 
@@ -23,7 +23,7 @@ After the first pass of unit tests, it is important to refactor the common setup
 
 #### Verification Functions
 
-For each Moloch.sol function, the Moloch tests have a *verification function* that checks each state transition expected from the successful execution of the function.
+For each Mollusk.sol function, the Mollusk tests have a *verification function* that checks each state transition expected from the successful execution of the function.
 
 For example, `verifySubmitVote` checks that the `proposal.yesVotes` or `proposal.noVotes` were tallied (depending on which way a member voted), that the `proposal.maxTotalSharesAtYesVote` is updated if needed, and that the vote is also recorded in the `proposal.votesByMember` mapping.
 
@@ -31,7 +31,7 @@ The `member.highestIndexYesVote` field is also conditionally updated by `submitV
 
 #### Snapshot & Revert
 
-The Moloch tests make heavy use of EVM snapshot & revert both to speed up the tests and to allow for less repetitive setup code.
+The Mollusk tests make heavy use of EVM snapshot & revert both to speed up the tests and to allow for less repetitive setup code.
 
 ```
   beforeEach(async () => {
@@ -41,7 +41,7 @@ The Moloch tests make heavy use of EVM snapshot & revert both to speed up the te
       applicant: applicant1,
       tokenTribute: 100,
       sharesRequested: 1,
-      details: 'all hail moloch'
+      details: 'all hail mollusk'
     }
 
     token.transfer(summoner, initSummonerBalance, { from: creator })
@@ -64,21 +64,21 @@ Nested in the next `describe` test block is another `beforeEach` which is invoke
       await token.transfer(proposal1.applicant, proposal1.tokenTribute, {
         from: creator
       })
-      await token.approve(moloch.address, 10, { from: summoner })
-      await token.approve(moloch.address, proposal1.tokenTribute, {
+      await token.approve(mollusk.address, 10, { from: summoner })
+      await token.approve(mollusk.address, proposal1.tokenTribute, {
         from: proposal1.applicant
       })
     })
     ...
 ```
 
-This `beforeEach` performs the setup for the `submitProposal` unit tests by transferring the proposal applicant the required amount of tribute tokens, approving the transfer of those tokens from the applicant to the Moloch contract, and also approving the transfer of enough tokens to cover the proposal deposit from the summoner.
+This `beforeEach` performs the setup for the `submitProposal` unit tests by transferring the proposal applicant the required amount of tribute tokens, approving the transfer of those tokens from the applicant to the Mollusk contract, and also approving the transfer of enough tokens to cover the proposal deposit from the summoner.
 
 This setup code is re-used in the following 8 tests, which only minimally deviate from the initial setup in order to test various other scenarios. For example, the first happy case test simply calls submit proposal with the baseline `proposal1` parameters, and then calls the `verifySubmitProposal` to check the state transitions.
 
 ```
     it('happy case', async () => {
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.tokenTribute,
         proposal1.sharesRequested,
@@ -97,7 +97,7 @@ The next unit test changes *ONLY* one thing, which is that it sets the shares re
 ```
     it('require fail - uint overflow', async () => {
       proposal1.sharesRequested = _1e18
-      await moloch
+      await mollusk
         .submitProposal(
           proposal1.applicant,
           proposal1.tokenTribute,
@@ -126,7 +126,7 @@ Similar to `require` checks, the proper application of all modifiers should be t
 
 ```
     it('modifier - delegate', async () => {
-      await moloch
+      await mollusk
         .submitProposal(
           proposal1.applicant,
           proposal1.tokenTribute,
@@ -142,7 +142,7 @@ It is especially important to also test the existence of the `internal` modifier
 
 ### Test Boundary Conditions
 
-For example, for most integer inputs, this means testing `0`, `1`, `uint_max`, and `uint_max - 1`. This will trigger any potential overflows that might otherwise not be caught by `require` checks. In Moloch we hard-coded a few upper limits for certain variables and also used `SafeMath` for all math operations to eliminate the risk of overflows.
+For example, for most integer inputs, this means testing `0`, `1`, `uint_max`, and `uint_max - 1`. This will trigger any potential overflows that might otherwise not be caught by `require` checks. In Mollusk we hard-coded a few upper limits for certain variables and also used `SafeMath` for all math operations to eliminate the risk of overflows.
 
 ```
 // HARD-CODED LIMITS
@@ -159,7 +159,7 @@ We still check the boundaries, however, as it is not sufficient to check that th
 ```
       it('success - request 1 less share than the overflow limit', async () => {
         proposal1.sharesRequested = _1e18.sub(new BN(1)) // 1 less
-        await moloch.submitProposal(
+        await mollusk.submitProposal(
           proposal1.applicant,
           proposal1.tokenTribute,
           proposal1.sharesRequested,
@@ -181,7 +181,7 @@ This likely goes without saying but 100% of the code paths must be tested. For e
 
 ### Test in a Logical Progression
 
-Like any codebase, the tests should provide an intuitive map of the territory. The tests should roughly align with the usage flow of the smart contract. For example, the Moloch tests are organized in the same order as the Moloch.sol smart contract:
+Like any codebase, the tests should provide an intuitive map of the territory. The tests should roughly align with the usage flow of the smart contract. For example, the Mollusk tests are organized in the same order as the Mollusk.sol smart contract:
 1. constructor
 2. submitProposal
 3. submitVote

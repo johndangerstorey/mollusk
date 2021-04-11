@@ -2,7 +2,7 @@ const BN = require('bn.js')
 const deploymentParams = require('../deployment-params')
 
 const {
-  getDeployedMoloch,
+  getDeployedMollusk,
   getFirstAccount,
   getApprovedToken,
   hasEnoughTokens,
@@ -10,7 +10,7 @@ const {
   giveAllowance
 } = require('./utils')
 
-task('moloch-deploy', 'Deploys a new instance of the Moloch DAO')
+task('mollusk-deploy', 'Deploys a new instance of the Mollusk DAO')
   .setAction(async () => {
     if (deploymentParams.SUMMONER === '' || deploymentParams.TOKEN === '') {
       console.error('Please set the deployment parameters in deployment-params.js')
@@ -42,10 +42,10 @@ task('moloch-deploy', 'Deploys a new instance of the Moloch DAO')
       return
     }
 
-    const Moloch = artifacts.require('Moloch')
+    const Mollusk = artifacts.require('Mollusk')
 
     console.log("Deploying...")
-    const moloch = await Moloch.new(
+    const mollusk = await Mollusk.new(
       deploymentParams.SUMMONER,
       deploymentParams.TOKEN,
       deploymentParams.PERIOD_DURATION_IN_SECONDS,
@@ -58,11 +58,11 @@ task('moloch-deploy', 'Deploys a new instance of the Moloch DAO')
     )
 
     console.log("")
-    console.log('Moloch DAO deployed. Address:', moloch.address)
+    console.log('Mollusk DAO deployed. Address:', mollusk.address)
     console.log("Set this address in buidler.config.js's networks section to use the other tasks")
   })
 
-task('moloch-submit-proposal', 'Submits a proposal')
+task('mollusk-submit-proposal', 'Submits a proposal')
   .addParam('applicant', 'The address of the applicant')
   .addParam('tribute', "The number of token's wei offered as tribute")
   .addParam('shares', 'The number of shares requested')
@@ -71,8 +71,8 @@ task('moloch-submit-proposal', 'Submits a proposal')
     // Make sure everything is compiled
     await run('compile')
 
-    const moloch = await getDeployedMoloch()
-    if (moloch === undefined) {
+    const mollusk = await getDeployedMollusk()
+    if (mollusk === undefined) {
       return
     }
 
@@ -81,7 +81,7 @@ task('moloch-submit-proposal', 'Submits a proposal')
       return
     }
 
-    const proposalDeposit = await moloch.proposalDeposit()
+    const proposalDeposit = await mollusk.proposalDeposit()
     const sender = await getFirstAccount()
 
     if (!await hasEnoughTokens(token, sender, proposalDeposit)) {
@@ -89,8 +89,8 @@ task('moloch-submit-proposal', 'Submits a proposal')
       return
     }
 
-    if (!await hasEnoughAllowance(token, sender, moloch, proposalDeposit)) {
-      await giveAllowance(token, sender, moloch, proposalDeposit)
+    if (!await hasEnoughAllowance(token, sender, mollusk, proposalDeposit)) {
+      await giveAllowance(token, sender, mollusk, proposalDeposit)
     }
 
     if (new BN(tribute).gt(new BN(0))) {
@@ -99,27 +99,27 @@ task('moloch-submit-proposal', 'Submits a proposal')
         return
       }
 
-      if (!await hasEnoughAllowance(token, applicant, moloch, tribute)) {
+      if (!await hasEnoughAllowance(token, applicant, mollusk, tribute)) {
         console.error('The applicant must give allowance to the DAO before being proposed')
         return
       }
     }
 
-    const { receipt } = await moloch.submitProposal(applicant, tribute, shares, details)
+    const { receipt } = await mollusk.submitProposal(applicant, tribute, shares, details)
     const proposalIndex = receipt.logs[0].args.proposalIndex
 
     console.log('Submitted proposal number', proposalIndex.toString())
   })
 
-task('moloch-submit-vote', 'Submits a vote')
+task('mollusk-submit-vote', 'Submits a vote')
   .addParam('proposal', 'The proposal number', undefined, types.int)
   .addParam('vote', 'The vote (yes/no)')
   .setAction(async ({ proposal, vote }) => {
     // Make sure everything is compiled
     await run('compile')
 
-    const moloch = await getDeployedMoloch()
-    if (moloch === undefined) {
+    const mollusk = await getDeployedMollusk()
+    if (mollusk === undefined) {
       return
     }
 
@@ -130,51 +130,51 @@ task('moloch-submit-vote', 'Submits a vote')
 
     const voteNumber = vote.toLowerCase() === 'yes' ? 1 : 2
 
-    await moloch.submitVote(proposal, voteNumber)
+    await mollusk.submitVote(proposal, voteNumber)
     console.log('Vote submitted')
   })
 
-task('moloch-process-proposal', 'Processes a proposal')
+task('mollusk-process-proposal', 'Processes a proposal')
   .addParam('proposal', 'The proposal number', undefined, types.int)
   .setAction(async ({ proposal }) => {
     // Make sure everything is compiled
     await run('compile')
 
-    const moloch = await getDeployedMoloch()
-    if (moloch === undefined) {
+    const mollusk = await getDeployedMollusk()
+    if (mollusk === undefined) {
       return
     }
 
-    await moloch.processProposal(proposal)
+    await mollusk.processProposal(proposal)
     console.log('Proposal processed')
   })
 
-task('moloch-ragequit', 'Ragequits, burning some shares and getting tokens back')
+task('mollusk-ragequit', 'Ragequits, burning some shares and getting tokens back')
   .addParam('shares', 'The amount of shares to burn')
   .setAction(async ({ shares }) => {
     // Make sure everything is compiled
     await run('compile')
 
-    const moloch = await getDeployedMoloch()
-    if (moloch === undefined) {
+    const mollusk = await getDeployedMollusk()
+    if (mollusk === undefined) {
       return
     }
 
-    await moloch.ragequit(shares)
+    await mollusk.ragequit(shares)
     console.log(`Burn ${shares} shares`)
   })
 
-task('moloch-update-delegate', 'Updates your delegate')
+task('mollusk-update-delegate', 'Updates your delegate')
   .addParam('delegate', "The new delegate's address")
   .setAction(async ({ delegate }) => {
     // Make sure everything is compiled
     await run('compile')
 
-    const moloch = await getDeployedMoloch()
-    if (moloch === undefined) {
+    const mollusk = await getDeployedMollusk()
+    if (mollusk === undefined) {
       return
     }
 
-    await moloch.updateDelegateKey(delegate)
+    await mollusk.updateDelegateKey(delegate)
     console.log(`Delegate updated`)
   })

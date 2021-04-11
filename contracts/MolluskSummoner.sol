@@ -1,16 +1,16 @@
 pragma solidity 0.5.3;
 
-import "./Moloch.sol";
+import "./Mollusk.sol";
 
-contract MolochSummoner {
+contract MolluskSummoner {
 
-    Moloch private M;
+    Mollusk private M;
 
-    address[] public Molochs;
+    address[] public Mollusks;
 
     event Summoned(address indexed M, address indexed _summoner);
 
-    function summonMoloch(
+    function summonMollusk(
         address _summoner,
         address[] memory _approvedTokens,
         uint256 _periodDuration,
@@ -20,7 +20,7 @@ contract MolochSummoner {
         uint256 _dilutionBound,
         uint256 _processingReward) public {
 
-        M = new Moloch(
+        M = new Mollusk(
             _summoner,
             _approvedTokens,
             _periodDuration,
@@ -30,13 +30,13 @@ contract MolochSummoner {
             _dilutionBound,
             _processingReward);
 
-        Molochs.push(address(M));
+        Mollusks.push(address(M));
 
         emit Summoned(address(M), _summoner);
 
     }
 
-    function getMolochCount() public view returns (uint256 MolochCount) {
-        return Molochs.length;
+    function getMolluskCount() public view returns (uint256 MolluskCount) {
+        return Mollusks.length;
     }
 }

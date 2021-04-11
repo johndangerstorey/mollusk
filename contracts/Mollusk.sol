@@ -4,7 +4,7 @@ import "./SafeMath.sol";
 import "./IERC20.sol";
 import "./ReentrancyGuard.sol";
 
-contract Moloch is ReentrancyGuard {
+contract Mollusk is ReentrancyGuard {
     using SafeMath for uint256;
 
     /***************
@@ -194,7 +194,7 @@ contract Moloch is ReentrancyGuard {
             require(totalGuildBankTokens < MAX_TOKEN_GUILDBANK_COUNT, 'cannot submit more tribute proposals for new tokens - guildbank is full');
         }
 
-        // collect tribute from proposer and store it in the Moloch until the proposal is processed
+        // collect tribute from proposer and store it in the Mollusk until the proposal is processed
         require(IERC20(tributeToken).transferFrom(msg.sender, address(this), tributeOffered), "tribute token transfer failed");
         unsafeAddToBalance(ESCROW, tributeToken, tributeOffered);
 
@@ -266,7 +266,7 @@ contract Moloch is ReentrancyGuard {
     }
 
     function sponsorProposal(uint256 proposalId) public nonReentrant onlyDelegate {
-        // collect proposal deposit from sponsor and store it in the Moloch until the proposal is processed
+        // collect proposal deposit from sponsor and store it in the Mollusk until the proposal is processed
         require(IERC20(depositToken).transferFrom(msg.sender, address(this), proposalDeposit), "proposal deposit token transfer failed");
         unsafeAddToBalance(ESCROW, depositToken, proposalDeposit);
 
@@ -313,7 +313,7 @@ contract Moloch is ReentrancyGuard {
         emit SponsorProposal(msg.sender, memberAddress, proposalId, proposalQueue.length.sub(1), startingPeriod);
     }
 
-    // NOTE: In MolochV2 proposalIndex !== proposalId
+    // NOTE: In MolluskV2 proposalIndex !== proposalId
     function submitVote(uint256 proposalIndex, uint8 uintVote) public nonReentrant onlyDelegate {
         address memberAddress = memberAddressByDelegateKey[msg.sender];
         Member storage member = members[memberAddress];

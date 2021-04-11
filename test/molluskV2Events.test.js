@@ -21,22 +21,22 @@ const {
   verifyMember
 } = require('./test-utils')
 
-const Moloch = artifacts.require('./Moloch')
+const Mollusk = artifacts.require('./Mollusk')
 const Token = artifacts.require('./Token')
 const Submitter = artifacts.require('./Submitter') // used to test submit proposal return values
 
 const revertMessages = {
-  molochConstructorSummonerCannotBe0: 'summoner cannot be 0',
-  molochConstructorPeriodDurationCannotBe0: '_periodDuration cannot be 0',
-  molochConstructorVotingPeriodLengthCannotBe0: '_votingPeriodLength cannot be 0',
-  molochConstructorVotingPeriodLengthExceedsLimit: '_votingPeriodLength exceeds limit',
-  molochConstructorGracePeriodLengthExceedsLimit: '_gracePeriodLength exceeds limit',
-  molochConstructorDilutionBoundCannotBe0: '_dilutionBound cannot be 0',
-  molochConstructorDilutionBoundExceedsLimit: '_dilutionBound exceeds limit',
-  molochConstructorNeedAtLeastOneApprovedToken: 'need at least one approved token',
-  molochConstructorDepositCannotBeSmallerThanProcessingReward: '_proposalDeposit cannot be smaller than _processingReward',
-  molochConstructorApprovedTokenCannotBe0: '_approvedToken cannot be 0',
-  molochConstructorDuplicateApprovedToken: 'revert duplicate approved token',
+  molluskConstructorSummonerCannotBe0: 'summoner cannot be 0',
+  molluskConstructorPeriodDurationCannotBe0: '_periodDuration cannot be 0',
+  molluskConstructorVotingPeriodLengthCannotBe0: '_votingPeriodLength cannot be 0',
+  molluskConstructorVotingPeriodLengthExceedsLimit: '_votingPeriodLength exceeds limit',
+  molluskConstructorGracePeriodLengthExceedsLimit: '_gracePeriodLength exceeds limit',
+  molluskConstructorDilutionBoundCannotBe0: '_dilutionBound cannot be 0',
+  molluskConstructorDilutionBoundExceedsLimit: '_dilutionBound exceeds limit',
+  molluskConstructorNeedAtLeastOneApprovedToken: 'need at least one approved token',
+  molluskConstructorDepositCannotBeSmallerThanProcessingReward: '_proposalDeposit cannot be smaller than _processingReward',
+  molluskConstructorApprovedTokenCannotBe0: '_approvedToken cannot be 0',
+  molluskConstructorDuplicateApprovedToken: 'revert duplicate approved token',
   submitProposalTooManySharesRequested: 'too many shares requested',
   submitProposalProposalMustHaveBeenProposed: 'proposal must have been proposed',
   submitProposalTributeTokenIsNotWhitelisted: 'tributeToken is not whitelisted',
@@ -132,8 +132,8 @@ async function moveForwardPeriods (periods) {
   return true
 }
 
-contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, delegateKey, nonMemberAccount, ...otherAccounts]) => {
-  let moloch, tokenAlpha, submitter
+contract('Mollusk', ([creator, summoner, applicant1, applicant2, processor, delegateKey, nonMemberAccount, ...otherAccounts]) => {
+  let mollusk, tokenAlpha, submitter
   let proposal1, proposal2, depositToken
 
   const initSummonerBalance = 100
@@ -153,15 +153,15 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
   let snapshotId
 
-  const fundAndApproveToMoloch = async ({ to, from, value }) => {
+  const fundAndApproveToMollusk = async ({ to, from, value }) => {
     await tokenAlpha.transfer(to, value, { from: from })
-    await tokenAlpha.approve(moloch.address, value, { from: to })
+    await tokenAlpha.approve(mollusk.address, value, { from: to })
   }
 
   before('deploy contracts', async () => {
     tokenAlpha = await Token.new(deploymentConfig.TOKEN_SUPPLY)
 
-    moloch = await Moloch.new(
+    mollusk = await Mollusk.new(
       summoner,
       [tokenAlpha.address],
       deploymentConfig.PERIOD_DURATION_IN_SECONDS,
@@ -172,10 +172,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       deploymentConfig.PROCESSING_REWARD
     )
 
-    const depositTokenAddress = await moloch.depositToken()
+    const depositTokenAddress = await mollusk.depositToken()
     assert.equal(depositTokenAddress, tokenAlpha.address)
 
-    submitter = await Submitter.new(moloch.address)
+    submitter = await Submitter.new(mollusk.address)
 
     depositToken = tokenAlpha
   })
@@ -191,7 +191,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       tributeToken: tokenAlpha.address,
       paymentRequested: 0,
       paymentToken: tokenAlpha.address,
-      details: 'all hail moloch'
+      details: 'all hail mollusk'
     }
 
     proposal2 = {
@@ -202,7 +202,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       tributeToken: tokenAlpha.address,
       paymentRequested: 0,
       paymentToken: tokenAlpha.address,
-      details: 'all hail moloch 2'
+      details: 'all hail mollusk 2'
     }
 
     tokenAlpha.transfer(summoner, initSummonerBalance, { from: creator })
@@ -217,40 +217,40 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // eslint-disable-next-line no-unused-vars
       const now = await blockTime()
 
-      const proposalCount = await moloch.proposalCount()
+      const proposalCount = await mollusk.proposalCount()
       assert.equal(proposalCount, 0)
 
-      const periodDuration = await moloch.periodDuration()
+      const periodDuration = await mollusk.periodDuration()
       assert.equal(+periodDuration, deploymentConfig.PERIOD_DURATION_IN_SECONDS)
 
-      const votingPeriodLength = await moloch.votingPeriodLength()
+      const votingPeriodLength = await mollusk.votingPeriodLength()
       assert.equal(+votingPeriodLength, deploymentConfig.VOTING_DURATON_IN_PERIODS)
 
-      const gracePeriodLength = await moloch.gracePeriodLength()
+      const gracePeriodLength = await mollusk.gracePeriodLength()
       assert.equal(+gracePeriodLength, deploymentConfig.GRACE_DURATON_IN_PERIODS)
 
-      const proposalDeposit = await moloch.proposalDeposit()
+      const proposalDeposit = await mollusk.proposalDeposit()
       assert.equal(+proposalDeposit, deploymentConfig.PROPOSAL_DEPOSIT)
 
-      const dilutionBound = await moloch.dilutionBound()
+      const dilutionBound = await mollusk.dilutionBound()
       assert.equal(+dilutionBound, deploymentConfig.DILUTION_BOUND)
 
-      const processingReward = await moloch.processingReward()
+      const processingReward = await mollusk.processingReward()
       assert.equal(+processingReward, deploymentConfig.PROCESSING_REWARD)
 
-      const currentPeriod = await moloch.getCurrentPeriod()
+      const currentPeriod = await mollusk.getCurrentPeriod()
       assert.equal(+currentPeriod, 0)
 
-      const summonerData = await moloch.members(summoner)
+      const summonerData = await mollusk.members(summoner)
       assert.equal(summonerData.delegateKey, summoner) // delegateKey matches
       assert.equal(summonerData.shares, summonerShares)
       assert.equal(summonerData.exists, true)
       assert.equal(summonerData.highestIndexYesVote, 0)
 
-      const summonerAddressByDelegateKey = await moloch.memberAddressByDelegateKey(summoner)
+      const summonerAddressByDelegateKey = await mollusk.memberAddressByDelegateKey(summoner)
       assert.equal(summonerAddressByDelegateKey, summoner)
 
-      const totalShares = await moloch.totalShares()
+      const totalShares = await mollusk.totalShares()
       assert.equal(+totalShares, summonerShares)
 
       // confirm initial deposit token supply and summoner balance
@@ -262,11 +262,11 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       assert.equal(creatorBalance, deploymentConfig.TOKEN_SUPPLY - initSummonerBalance)
 
       // check all tokens passed in construction are approved
-      const tokenAlphaApproved = await moloch.tokenWhitelist(tokenAlpha.address)
+      const tokenAlphaApproved = await mollusk.tokenWhitelist(tokenAlpha.address)
       assert.equal(tokenAlphaApproved, true)
 
       // first token should be the deposit token
-      const firstWhitelistedToken = await moloch.approvedTokens(0)
+      const firstWhitelistedToken = await mollusk.approvedTokens(0)
       assert.equal(firstWhitelistedToken, depositToken.address)
       assert.equal(firstWhitelistedToken, tokenAlpha.address)
     })
@@ -275,7 +275,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
       const depToken = await Token.new(deploymentConfig.TOKEN_SUPPLY)
 
-      const newContract = await Moloch.new(
+      const newContract = await Mollusk.new(
         summoner,
         [depToken.address],
         deploymentConfig.PERIOD_DURATION_IN_SECONDS,
@@ -298,11 +298,11 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       //event SummonComplete(address indexed summoner, address[] tokens, uint256 summoningTime, uint256 periodDuration, uint256 votingPeriodLength, uint256 gracePeriodLength, uint256 proposalDeposit, uint256 dilutionBound, uint256 processingReward);
       assert.equal(log.event, 'SummonComplete');
 
-      const molochSummoner = log.args.summoner;
+      const molluskSummoner = log.args.summoner;
       const {tokens,summoningTime,periodDuration,votingPeriodLength,gracePeriodLength,proposalDeposit,dilutionBound,processingReward } = log.args;
       
       assert.isNotNull(summoningTime);
-      assert.equal(molochSummoner, summoner);
+      assert.equal(molluskSummoner, summoner);
       assert.deepEqual(tokens, [depToken.address]);
       assert.equal(periodDuration, deploymentConfig.PERIOD_DURATION_IN_SECONDS);
       assert.equal(votingPeriodLength, deploymentConfig.VOTING_DURATON_IN_PERIODS);
@@ -316,17 +316,17 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
   describe('submitProposal events', () => {
     beforeEach(async () => {
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: applicant1,
         from: creator,
         value: proposal1.tributeOffered
       })
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: proposal1.tributeOffered
       })
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: processor,
         from: creator,
         value: proposal1.tributeOffered
@@ -334,7 +334,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - emits SubmitProposal event submitted by non-member', async () =>{
-      const countBefore = await moloch.proposalCount()
+      const countBefore = await mollusk.proposalCount()
 
       await verifyBalance({
         token: tokenAlpha,
@@ -343,7 +343,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       const proposer = proposal1.applicant
-      const emittedLogs = await moloch.submitProposal(
+      const emittedLogs = await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -355,11 +355,11 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: proposal1.applicant }
       )
 
-      const countAfter = await moloch.proposalCount()
+      const countAfter = await mollusk.proposalCount()
       assert.equal(+countAfter, +countBefore.add(_1))
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: proposal1,
         proposalId: firstProposalIndex,
         proposer: proposer,
@@ -367,7 +367,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, false, false]
       })
@@ -382,13 +382,13 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // DAO is holding the tribute
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered
       })
 
       // ESCROW balance has been updated
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: tokenAlpha,
         user: ESCROW,
         expectedBalance: proposal1.tributeOffered
@@ -416,7 +416,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - emits SubmitProposal event submitted by member', async () => {
-      const countBefore = await moloch.proposalCount()
+      const countBefore = await mollusk.proposalCount()
 
       await verifyBalance({
         token: tokenAlpha,
@@ -425,7 +425,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       const proposer = proposal1.applicant
-      const emittedLogs = await moloch.submitProposal(
+      const emittedLogs = await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -437,11 +437,11 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: summoner }
       )
 
-      const countAfter = await moloch.proposalCount()
+      const countAfter = await mollusk.proposalCount()
       assert.equal(+countAfter, +countBefore.add(_1))
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: proposal1,
         proposalId: firstProposalIndex,
         proposer: summoner,
@@ -449,7 +449,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, false, false]
       })
@@ -464,13 +464,13 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // DAO is holding the tribute
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered
       })
 
       // ESCROW balance has been updated
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: tokenAlpha,
         user: ESCROW,
         expectedBalance: proposal1.tributeOffered
@@ -498,12 +498,12 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - emits SubmitProposal event submitted by delegate', async () => {
-      const countBefore = await moloch.proposalCount()
+      const countBefore = await mollusk.proposalCount()
 
-      await moloch.updateDelegateKey(processor, { from: summoner })
+      await mollusk.updateDelegateKey(processor, { from: summoner })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: summoner,
         expectedDelegateKey: processor,
         expectedShares: 1,
@@ -523,7 +523,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       const proposer = proposal1.applicant
-      const emittedLogs = await moloch.submitProposal(
+      const emittedLogs = await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -535,10 +535,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: processor }
       )
 
-      const countAfter = await moloch.proposalCount()
+      const countAfter = await mollusk.proposalCount()
       assert.equal(+countAfter, +countBefore.add(_1))
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: proposal1,
         proposalId: firstProposalIndex,
         proposer: processor,
@@ -546,7 +546,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, false, false]
       })
@@ -561,13 +561,13 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // DAO is holding the tribute
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered
       })
 
       // ESCROW balance has been updated
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: tokenAlpha,
         user: ESCROW,
         expectedBalance: proposal1.tributeOffered
@@ -622,14 +622,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      const emittedLogs = await moloch.submitWhitelistProposal(
+      const emittedLogs = await mollusk.submitWhitelistProposal(
         newToken.address,
         'whitelist me!',
         { from: proposal1.applicant }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: whitelistProposal,
         proposalId: firstProposalIndex,
         proposer: proposer,
@@ -637,7 +637,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, true, false] // whitelist flag set to true after proposal
       })
@@ -649,10 +649,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      // no tribute value is required so moloch will be empty
+      // no tribute value is required so mollusk will be empty
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: 0
       })
 
@@ -698,14 +698,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: initSummonerBalance
       })
 
-      const emittedLogs = await moloch.submitWhitelistProposal(
+      const emittedLogs = await mollusk.submitWhitelistProposal(
         newToken.address,
         'whitelist me!',
         { from: summoner }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: whitelistProposal,
         proposalId: firstProposalIndex,
         proposer: summoner,
@@ -713,7 +713,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, true, false] // whitelist flag set to true after proposal
       })
@@ -725,10 +725,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: initSummonerBalance
       })
 
-      // no tribute value is required so moloch will be empty
+      // no tribute value is required so mollusk will be empty
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: 0
       })
 
@@ -756,7 +756,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
     it('require success - emits SubmitProposal event submitted by delegate', async () => {
 
-      await moloch.updateDelegateKey(processor, { from: summoner })
+      await mollusk.updateDelegateKey(processor, { from: summoner })
 
       const proposer = proposal1.applicant
       const whitelistProposal = {
@@ -777,14 +777,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      const emittedLogs = await moloch.submitWhitelistProposal(
+      const emittedLogs = await mollusk.submitWhitelistProposal(
         newToken.address,
         'whitelist me!',
         { from: processor }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: whitelistProposal,
         proposalId: firstProposalIndex,
         proposer: processor,
@@ -792,7 +792,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, true, false] // whitelist flag set to true after proposal
       })
@@ -804,10 +804,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      // no tribute value is required so moloch will be empty
+      // no tribute value is required so mollusk will be empty
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: 0
       })
 
@@ -838,7 +838,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     let proposer, applicant
     beforeEach(async () => {
       // cant kick the summoner, so we have to vote in a new member
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: proposal1.applicant,
         from: creator,
         value: proposal1.tributeOffered
@@ -847,7 +847,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // submit
       proposer = proposal1.applicant
       applicant = proposal1.applicant
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -859,21 +859,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: proposer }
       )
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
       await moveForwardPeriods(1)
-      await moloch.submitVote(firstProposalIndex, yes, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, yes, { from: summoner })
       await moveForwardPeriods(deploymentConfig.VOTING_DURATON_IN_PERIODS)
       await moveForwardPeriods(deploymentConfig.GRACE_DURATON_IN_PERIODS)
-      await moloch.processProposal(firstProposalIndex, { from: processor })
+      await mollusk.processProposal(firstProposalIndex, { from: processor })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: proposal1.applicant,
         expectedShares: proposal1.sharesRequested,
@@ -902,14 +902,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      const emittedLogs = await moloch.submitGuildKickProposal(
+      const emittedLogs = await mollusk.submitGuildKickProposal(
         guildKickProposal.applicant,
         guildKickProposal.details,
         { from: nonMemberProposer }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: guildKickProposal,
         proposalId: secondProposalIndex,
         proposer: nonMemberProposer,
@@ -918,7 +918,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [false, false, false, false, false, true] // guild kick flag set to true after proposal
       })
@@ -930,22 +930,22 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      // no tribute value is required so moloch will be empty
+      // no tribute value is required so mollusk will be empty
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT
       })
 
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         user: ESCROW,
         expectedBalance: 0
       })
 
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         user: GUILD,
         expectedBalance: proposal1.tributeOffered
@@ -992,14 +992,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      const emittedLogs = await moloch.submitGuildKickProposal(
+      const emittedLogs = await mollusk.submitGuildKickProposal(
         guildKickProposal.applicant,
         guildKickProposal.details,
         { from: proposer }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: guildKickProposal,
         proposalId: secondProposalIndex,
         proposer: proposer,
@@ -1008,7 +1008,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [false, false, false, false, false, true] // guild kick flag set to true after proposal
       })
@@ -1020,22 +1020,22 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      // no tribute value is required so moloch will be empty
+      // no tribute value is required so mollusk will be empty
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT
       })
 
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         user: ESCROW,
         expectedBalance: 0
       })
 
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         user: GUILD,
         expectedBalance: proposal1.tributeOffered
@@ -1063,7 +1063,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - emits SubmitProposal event submitted by delegate', async () => {
-      await moloch.updateDelegateKey(processor, { from: proposal1.applicant })
+      await mollusk.updateDelegateKey(processor, { from: proposal1.applicant })
 
       const proposer = processor
       const guildKickProposal = {
@@ -1084,14 +1084,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      const emittedLogs = await moloch.submitGuildKickProposal(
+      const emittedLogs = await mollusk.submitGuildKickProposal(
         guildKickProposal.applicant,
         guildKickProposal.details,
         { from: proposer }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: guildKickProposal,
         proposalId: secondProposalIndex,
         proposer: proposer,
@@ -1100,7 +1100,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [false, false, false, false, false, true] // guild kick flag set to true after proposal
       })
@@ -1112,22 +1112,22 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      // no tribute value is required so moloch will be empty
+      // no tribute value is required so mollusk will be empty
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT
       })
 
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         user: ESCROW,
         expectedBalance: 0
       })
 
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         user: GUILD,
         expectedBalance: proposal1.tributeOffered
@@ -1157,7 +1157,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
   describe('sponsorProposal events', () => {
     beforeEach(async () => {
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered
@@ -1169,17 +1169,17 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: initSummonerBalance + deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered
       })
 
-      // moloch has approval to move the funds
+      // mollusk has approval to move the funds
       await verifyAllowance({
         token: depositToken,
         owner: summoner,
-        spender: moloch.address,
+        spender: mollusk.address,
         expectedAllowance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered
       })
     })
 
     it('require success - emits SponsorProposal event for proposal', async () => {
-      const countBefore = await moloch.proposalCount()
+      const countBefore = await mollusk.proposalCount()
 
       await verifyBalance({
         token: tokenAlpha,
@@ -1188,7 +1188,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       const proposer = proposal1.applicant
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -1200,11 +1200,11 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: summoner }
       )
 
-      const countAfter = await moloch.proposalCount()
+      const countAfter = await mollusk.proposalCount()
       assert.equal(+countAfter, +countBefore.add(_1))
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: proposal1,
         proposalId: firstProposalIndex,
         proposer: summoner,
@@ -1212,7 +1212,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, false, false]
       })
@@ -1227,47 +1227,47 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // DAO is holding the tribute
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered
       })
 
       // ESCROW balance has been updated
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: tokenAlpha,
         user: ESCROW,
         expectedBalance: proposal1.tributeOffered
       })
 
 
-      const emittedLogs = await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      const emittedLogs = await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, false, false, false, false, false] // sponsored flag set
       })
 
       // deposit has moved
       await verifyBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         address: summoner,
         expectedBalance: initSummonerBalance
       })
 
-      // moloch has the deposit
+      // mollusk has the deposit
       await verifyBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered
       })
 
       await verifyAllowance({
         token: depositToken,
         owner: summoner,
-        spender: moloch.address,
+        spender: mollusk.address,
         expectedAllowance: 0
       })
 
@@ -1308,14 +1308,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: deploymentConfig.PROPOSAL_DEPOSIT+initSummonerBalance + proposal1.tributeOffered
       })
 
-      await moloch.submitWhitelistProposal(
+      await mollusk.submitWhitelistProposal(
         newToken.address,
         'whitelist me!',
         { from: summoner }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: whitelistProposal,
         proposalId: firstProposalIndex,
         proposer: summoner,
@@ -1323,7 +1323,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, true, false] // whitelist flag set to true after proposal
       })
@@ -1335,18 +1335,18 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: deploymentConfig.PROPOSAL_DEPOSIT+initSummonerBalance + proposal1.tributeOffered
       })
 
-      // no tribute value is required so moloch will be empty
+      // no tribute value is required so mollusk will be empty
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: 0
       })
 
 
-      const emittedLogs = await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      const emittedLogs = await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: whitelistProposal,
         proposalId: firstProposalIndex,
         proposer: summoner,
@@ -1357,7 +1357,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, false, false, false, true, false] // sponsored flag set
       })
@@ -1369,18 +1369,18 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: initSummonerBalance + proposal1.tributeOffered
       })
 
-      // moloch has the deposit
+      // mollusk has the deposit
       await verifyBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
       await verifyAllowance({
         token: depositToken,
         owner: summoner,
-        spender: moloch.address,
+        spender: mollusk.address,
         expectedAllowance: proposal1.tributeOffered
       })
 
@@ -1403,7 +1403,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
     it('require success - emits SponsorProposal event for guildKickProposal', async () => {
       // cant kick the summoner, so we have to vote in a new member
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: proposal1.applicant,
         from: creator,
         value: proposal1.tributeOffered
@@ -1412,7 +1412,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // submit
       const proposer = proposal1.applicant
       const applicant = proposal1.applicant
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -1424,21 +1424,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: proposer }
       )
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
       await moveForwardPeriods(1)
-      await moloch.submitVote(firstProposalIndex, yes, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, yes, { from: summoner })
       await moveForwardPeriods(deploymentConfig.VOTING_DURATON_IN_PERIODS)
       await moveForwardPeriods(deploymentConfig.GRACE_DURATON_IN_PERIODS)
-      await moloch.processProposal(firstProposalIndex, { from: processor })
+      await mollusk.processProposal(firstProposalIndex, { from: processor })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: proposal1.applicant,
         expectedShares: proposal1.sharesRequested,
@@ -1464,14 +1464,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      await moloch.submitGuildKickProposal(
+      await mollusk.submitGuildKickProposal(
         guildKickProposal.applicant,
         guildKickProposal.details,
         { from: proposer }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: guildKickProposal,
         proposalId: secondProposalIndex,
         proposer: proposer,
@@ -1480,7 +1480,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
   
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [false, false, false, false, false, true] // guild kick flag set to true after proposal
       })
@@ -1492,60 +1492,60 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedBalance: 0
       })
 
-      // no tribute value is required so moloch will be empty
+      // no tribute value is required so mollusk will be empty
       await verifyBalance({
         token: tokenAlpha,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT
       })
 
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         user: ESCROW,
         expectedBalance: 0
       })
 
       await verifyInternalBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         user: GUILD,
         expectedBalance: proposal1.tributeOffered
       })
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
-      const emittedLogs = await moloch.sponsorProposal(secondProposalIndex, { from: summoner })
+      const emittedLogs = await mollusk.sponsorProposal(secondProposalIndex, { from: summoner })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [true, false, false, false, false, true] // sponsored flag set
       })
 
       // deposit has moved
       await verifyBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
         address: summoner,
         expectedBalance: initSummonerBalance + proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      // moloch has the deposit
+      // mollusk has the deposit
       await verifyBalance({
-        moloch: moloch,
+        mollusk: mollusk,
         token: depositToken,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT 
       })
 
       await verifyAllowance({
         token: depositToken,
         owner: summoner,
-        spender: moloch.address,
+        spender: mollusk.address,
         expectedAllowance: 0
       })
 
@@ -1568,14 +1568,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
   describe('submitVote events', () => {
     beforeEach(async () => {
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: proposal1.applicant,
         from: creator,
         value: proposal1.tributeOffered
       })
 
       const proposer = proposal1.applicant
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -1588,7 +1588,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: proposal1,
         proposalId: firstProposalIndex,
         proposer: proposer,
@@ -1599,21 +1599,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, false, false]
       })
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: proposal1,
         proposalId: firstProposalIndex,
         proposer: proposer,
@@ -1624,7 +1624,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, false, false, false, false, false]
       })
@@ -1632,10 +1632,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
     it('require success - emits Vote event submitted by member', async () => {
       await moveForwardPeriods(1)
-      const emittedLogs = await moloch.submitVote(firstProposalIndex, yes, { from: summoner })
+      const emittedLogs = await mollusk.submitVote(firstProposalIndex, yes, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         memberAddress: summoner,
         expectedVote: yes,
@@ -1660,12 +1660,12 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
     it('require success - emits Vote event submitted by delegate', async () => {
       await moveForwardPeriods(1)
-      await moloch.updateDelegateKey(processor, { from: summoner })
+      await mollusk.updateDelegateKey(processor, { from: summoner })
 
-      const emittedLogs = await moloch.submitVote(firstProposalIndex, no, { from: processor })
+      const emittedLogs = await mollusk.submitVote(firstProposalIndex, no, { from: processor })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         memberAddress: summoner,
         expectedVote: no,
@@ -1694,7 +1694,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     let proposer, applicant
     beforeEach(async () => {
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: proposal1.applicant,
         from: creator,
         value: proposal1.tributeOffered
@@ -1703,7 +1703,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // submit
       proposer = proposal1.applicant
       applicant = proposal1.applicant
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -1715,17 +1715,17 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: proposer }
       )
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
       // sponsor
-      await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, false, false, false, false, false]
       })
@@ -1734,10 +1734,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - yes wins - emits ProcessProposal event', async () => {
-      await moloch.submitVote(firstProposalIndex, yes, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, yes, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         memberAddress: summoner,
         expectedMaxSharesAndLootAtYesVote: 1,
@@ -1749,16 +1749,16 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
-      const emittedLogs = await moloch.processProposal(firstProposalIndex, { from: processor })
+      const emittedLogs = await mollusk.processProposal(firstProposalIndex, { from: processor })
 
       await verifyProcessProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         expectedYesVotes: 1,
         expectedTotalShares: proposal1.sharesRequested + summonerShares, // add the 1 the summoner has
@@ -1767,21 +1767,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, true, true, false, false, false]
       })
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: proposal1.tributeOffered,
@@ -1792,7 +1792,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: proposal1.applicant,
         expectedShares: proposal1.sharesRequested,
@@ -1814,10 +1814,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - no wins - emits ProcessProposal event', async () => {
-      await moloch.submitVote(firstProposalIndex, no, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, no, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         memberAddress: summoner,
         expectedMaxSharesAndLootAtYesVote: 0,
@@ -1828,7 +1828,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       await moveForwardPeriods(deploymentConfig.GRACE_DURATON_IN_PERIODS)
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedShares: 0,
         expectedLoot: 0,
@@ -1837,16 +1837,16 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
-      const emittedLogs = await moloch.processProposal(firstProposalIndex, { from: processor })
+      const emittedLogs = await mollusk.processProposal(firstProposalIndex, { from: processor })
 
       await verifyProcessProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         expectedYesVotes: 0,
         expectedNoVotes: 1,
@@ -1855,21 +1855,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, true, false, false, false, false]
       })
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered, // tribute is still in moloch
+        mollusk: mollusk.address,
+        expectedMolluskBalance: deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered, // tribute is still in mollusk
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: 0,
@@ -1881,7 +1881,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: zeroAddress,
         expectedShares: 0,
@@ -1907,7 +1907,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
   describe('processWhitelistProposal events', () => {
     let proposer, applicant
     beforeEach(async () => {
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: proposal1.tributeOffered
@@ -1926,14 +1926,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         details: 'whitelist me!'
       }
 
-      await moloch.submitWhitelistProposal(
+      await mollusk.submitWhitelistProposal(
         newToken.address,
         'whitelist me!',
         { from: summoner }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: whitelistProposal,
         proposalId: firstProposalIndex,
         proposer: summoner,
@@ -1941,21 +1941,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, true, false] // whitelist flag set to true after proposal
       })
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: whitelistProposal,
         proposalId: firstProposalIndex,
         proposer: summoner,
@@ -1966,7 +1966,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, false, false, false, true, false] // sponsored flag set
       })
@@ -1975,10 +1975,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - yes wins - emits ProcessWhitelistProposal event', async () => {
-      await moloch.submitVote(firstProposalIndex, yes, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, yes, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         memberAddress: summoner,
         expectedMaxSharesAndLootAtYesVote: 1,
@@ -1990,16 +1990,16 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: deploymentConfig.PROPOSAL_DEPOSIT,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: deploymentConfig.PROPOSAL_DEPOSIT,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
-      const emittedLogs = await moloch.processWhitelistProposal(firstProposalIndex, { from: processor })
+      const emittedLogs = await mollusk.processWhitelistProposal(firstProposalIndex, { from: processor })
 
       await verifyProcessProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         expectedYesVotes: 1,
         expectedTotalShares: summonerShares, // add the 1 the summoner has
@@ -2008,21 +2008,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, true, true, false, true, false]
       })
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: deploymentConfig.PROPOSAL_DEPOSIT,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: deploymentConfig.PROPOSAL_DEPOSIT,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: 0,
@@ -2046,10 +2046,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - no wins - emits ProcessWhitelistProposal event', async () => {
-      await moloch.submitVote(firstProposalIndex, no, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, no, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         memberAddress: summoner,
         expectedMaxSharesAndLootAtYesVote: 0,
@@ -2061,16 +2061,16 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: deploymentConfig.PROPOSAL_DEPOSIT,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: deploymentConfig.PROPOSAL_DEPOSIT,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
-      const emittedLogs = await moloch.processWhitelistProposal(firstProposalIndex, { from: processor })
+      const emittedLogs = await mollusk.processWhitelistProposal(firstProposalIndex, { from: processor })
 
       await verifyProcessProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         expectedNoVotes: 1,
         expectedTotalShares: summonerShares, // add the 1 the summoner has
@@ -2079,21 +2079,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, true, false, false, true, false]
       })
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: deploymentConfig.PROPOSAL_DEPOSIT,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: deploymentConfig.PROPOSAL_DEPOSIT,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: 0,
@@ -2120,7 +2120,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     let proposer, applicant
     beforeEach(async () => {
       // cant kick the summoner, so we have to vote in a new member
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: proposal1.applicant,
         from: creator,
         value: proposal1.tributeOffered
@@ -2129,7 +2129,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       // submit
       const proposer = proposal1.applicant
       const applicant = proposal1.applicant
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -2141,21 +2141,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: proposer }
       )
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
       await moveForwardPeriods(1)
-      await moloch.submitVote(firstProposalIndex, yes, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, yes, { from: summoner })
       await moveForwardPeriods(deploymentConfig.VOTING_DURATON_IN_PERIODS)
       await moveForwardPeriods(deploymentConfig.GRACE_DURATON_IN_PERIODS)
-      await moloch.processProposal(firstProposalIndex, { from: processor })
+      await mollusk.processProposal(firstProposalIndex, { from: processor })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: proposal1.applicant,
         expectedShares: proposal1.sharesRequested,
@@ -2174,14 +2174,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         details: 'kick me!'
       }
 
-      await moloch.submitGuildKickProposal(
+      await mollusk.submitGuildKickProposal(
         guildKickProposal.applicant,
         guildKickProposal.details,
         { from: proposer }
       )
 
       await verifyProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposal: guildKickProposal,
         proposalId: secondProposalIndex,
         proposer: proposer,
@@ -2190,21 +2190,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
   
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [false, false, false, false, false, true] // guild kick flag set to true after proposal
       })
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      await moloch.sponsorProposal(secondProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(secondProposalIndex, { from: summoner })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [true, false, false, false, false, true] // sponsored flag set
       })
@@ -2214,10 +2214,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - yes wins - emits ProcessGuildKickProposal event', async () => {
-      await moloch.submitVote(secondProposalIndex, yes, { from: summoner })
+      await mollusk.submitVote(secondProposalIndex, yes, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: secondProposalIndex,
         memberAddress: summoner,
         expectedMaxSharesAndLootAtYesVote: summonerShares+proposal1.lootRequested+proposal1.sharesRequested,
@@ -2229,16 +2229,16 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: 2*deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: 2*deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
-      const emittedLogs = await moloch.processGuildKickProposal(secondProposalIndex, { from: processor })
+      const emittedLogs = await mollusk.processGuildKickProposal(secondProposalIndex, { from: processor })
 
       await verifyProcessProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: secondProposalIndex,
         expectedYesVotes: 1,
         expectedTotalShares: summonerShares, // add the 1 the summoner has
@@ -2247,21 +2247,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [true, true, true, false, false, true]
       })
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: 2*deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: 2*deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: proposal1.tributeOffered,
@@ -2287,10 +2287,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - no wins - emits ProcessGuildKickProposal event', async () => {
-      await moloch.submitVote(secondProposalIndex, no, { from: summoner })
+      await mollusk.submitVote(secondProposalIndex, no, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: secondProposalIndex,
         memberAddress: summoner,
         expectedMaxSharesAndLootAtYesVote: 0,
@@ -2302,16 +2302,16 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: 2*deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: 2*deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
-      const emittedLogs = await moloch.processGuildKickProposal(secondProposalIndex, { from: processor })
+      const emittedLogs = await mollusk.processGuildKickProposal(secondProposalIndex, { from: processor })
 
       await verifyProcessProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: secondProposalIndex,
         expectedNoVotes: 1,
         expectedTotalShares: summonerShares + proposal1.sharesRequested, // add the 1 the summoner has
@@ -2320,21 +2320,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: secondProposalIndex,
         expectedFlags: [true, true, false, false, false, true]
       })
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: 2*deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: 2*deploymentConfig.PROPOSAL_DEPOSIT + proposal1.tributeOffered,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0,
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: proposal1.tributeOffered,
@@ -2364,13 +2364,13 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
   describe('rageQuit events', () => {
     //NOTE: add applicant1 as a member
     beforeEach(async () => {
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: proposal1.applicant,
         from: creator,
         value: proposal1.tributeOffered
       })
 
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -2382,25 +2382,25 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: proposal1.applicant }
       )
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, false, false, false, false, false]
       })
 
       await moveForwardPeriods(1)
-      await moloch.submitVote(firstProposalIndex, yes, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, yes, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         memberAddress: summoner,
         expectedMaxSharesAndLootAtYesVote: 1,
@@ -2410,10 +2410,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       await moveForwardPeriods(deploymentConfig.VOTING_DURATON_IN_PERIODS)
       await moveForwardPeriods(deploymentConfig.GRACE_DURATON_IN_PERIODS)
 
-      await moloch.processProposal(firstProposalIndex, { from: processor })
+      await mollusk.processProposal(firstProposalIndex, { from: processor })
 
       await verifyProcessProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         expectedYesVotes: 1,
         expectedTotalShares: proposal1.sharesRequested + summonerShares, // add the 1 the summoner has
@@ -2422,21 +2422,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, true, true, false, false, false]
       })
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT, // tribute now in bank,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT, // tribute now in bank,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: proposal1.tributeOffered,
@@ -2447,7 +2447,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: proposal1.applicant,
         expectedShares: proposal1.sharesRequested,
@@ -2457,9 +2457,9 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
 
     it('require success - full ragequit - emits RageQuit event', async () => {
-      const emittedLogs = await moloch.ragequit(proposal1.sharesRequested, proposal1.lootRequested, { from: proposal1.applicant })
+      const emittedLogs = await mollusk.ragequit(proposal1.sharesRequested, proposal1.lootRequested, { from: proposal1.applicant })
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: proposal1.applicant,
         expectedShares: 0,
@@ -2467,14 +2467,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedMemberAddressByDelegateKey: proposal1.applicant
       })
 
-      const totalShares = await moloch.totalShares()
+      const totalShares = await mollusk.totalShares()
       assert.equal(totalShares, 1)
 
-      const totalLoot = await moloch.totalLoot()
+      const totalLoot = await mollusk.totalLoot()
       assert.equal(totalLoot, 0)
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: 1, // because 1 summonr share other than applicant
@@ -2499,9 +2499,9 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
     it('require success - partial ragequit - emits RageQuit event', async () => {
       partialRageQuitShares = 20
-      const emittedLogs = await moloch.ragequit(partialRageQuitShares, 0, { from: proposal1.applicant })
+      const emittedLogs = await mollusk.ragequit(partialRageQuitShares, 0, { from: proposal1.applicant })
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: proposal1.applicant,
         expectedShares: proposal1.sharesRequested - partialRageQuitShares,
@@ -2509,14 +2509,14 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedMemberAddressByDelegateKey: proposal1.applicant
       })
 
-      const totalShares = await moloch.totalShares()
+      const totalShares = await mollusk.totalShares()
       // your remaining shares plus the summoners 1 share
       assert.equal(totalShares, (proposal1.sharesRequested - partialRageQuitShares) + summonerShares)
 
       const amountToRagequit = Math.floor(partialRageQuitShares * proposal1.tributeOffered / (proposal1.sharesRequested + proposal1.lootRequested + 1))
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: proposal1.tributeOffered - amountToRagequit,
@@ -2543,13 +2543,13 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
   describe('withdraw events', async () => {
     beforeEach(async () => {
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: proposal1.applicant,
         from: creator,
         value: proposal1.tributeOffered
       })
 
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -2561,25 +2561,25 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: proposal1.applicant }
       )
 
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: summoner,
         from: creator,
         value: deploymentConfig.PROPOSAL_DEPOSIT
       })
 
-      await moloch.sponsorProposal(firstProposalIndex, { from: summoner })
+      await mollusk.sponsorProposal(firstProposalIndex, { from: summoner })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, false, false, false, false, false]
       })
 
       await moveForwardPeriods(1)
-      await moloch.submitVote(firstProposalIndex, yes, { from: summoner })
+      await mollusk.submitVote(firstProposalIndex, yes, { from: summoner })
 
       await verifySubmitVote({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         memberAddress: summoner,
         expectedMaxSharesAndLootAtYesVote: 1,
@@ -2589,10 +2589,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       await moveForwardPeriods(deploymentConfig.VOTING_DURATON_IN_PERIODS)
       await moveForwardPeriods(deploymentConfig.GRACE_DURATON_IN_PERIODS)
 
-      await moloch.processProposal(firstProposalIndex, { from: processor })
+      await mollusk.processProposal(firstProposalIndex, { from: processor })
 
       await verifyProcessProposal({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalIndex: firstProposalIndex,
         expectedYesVotes: 1,
         expectedTotalShares: proposal1.sharesRequested + summonerShares, // add the 1 the summoner has
@@ -2601,21 +2601,21 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [true, true, true, false, false, false]
       })
 
       await verifyBalances({
         token: depositToken,
-        moloch: moloch.address,
-        expectedMolochBalance: proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT, // tribute now in bank,
+        mollusk: mollusk.address,
+        expectedMolluskBalance: proposal1.tributeOffered + deploymentConfig.PROPOSAL_DEPOSIT, // tribute now in bank,
         applicant: proposal1.applicant,
         expectedApplicantBalance: 0
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: proposal1.tributeOffered,
@@ -2626,7 +2626,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
       })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: proposal1.applicant,
         expectedDelegateKey: proposal1.applicant,
         expectedShares: proposal1.sharesRequested,
@@ -2634,10 +2634,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         expectedMemberAddressByDelegateKey: proposal1.applicant
       })
 
-      await moloch.ragequit(proposal1.sharesRequested, proposal1.lootRequested, { from: proposal1.applicant })
+      await mollusk.ragequit(proposal1.sharesRequested, proposal1.lootRequested, { from: proposal1.applicant })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: 1, // because 1 summoner share other than applicant
@@ -2650,10 +2650,10 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
     })
     it('require success - partial withdraw - emits Withdraw event', async () => {
       const withdrawAmount = 10;
-      const emittedLogs = await  moloch.withdrawBalance(depositToken.address, withdrawAmount, { from: proposal1.applicant })
+      const emittedLogs = await  mollusk.withdrawBalance(depositToken.address, withdrawAmount, { from: proposal1.applicant })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: 1, // because 1 summoner share other than applicant
@@ -2685,13 +2685,13 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
   describe('cancelProposal events', () => {
     beforeEach(async () => {
-      await fundAndApproveToMoloch({
+      await fundAndApproveToMollusk({
         to: proposal1.applicant,
         from: creator,
         value: proposal1.tributeOffered
       })
 
-      await moloch.submitProposal(
+      await mollusk.submitProposal(
         proposal1.applicant,
         proposal1.sharesRequested,
         proposal1.lootRequested,
@@ -2703,7 +2703,7 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
         { from: proposal1.applicant }
       )
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, false, false, false]
       })
@@ -2712,22 +2712,22 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
     it('require success - emits CancelProposal event by member', async () => {
 
-      const emittedLogs = await  moloch.cancelProposal(firstProposalIndex, { from: proposal1.applicant })
+      const emittedLogs = await  mollusk.cancelProposal(firstProposalIndex, { from: proposal1.applicant })
 
       await verifyFlags({
-        moloch: moloch,
+        mollusk: mollusk,
         proposalId: firstProposalIndex,
         expectedFlags: [false, false, false, true, false, false]
       })
 
       await verifyBalance({
         token: depositToken,
-        address: moloch.address,
+        address: mollusk.address,
         expectedBalance: proposal1.tributeOffered
       })
 
       await verifyInternalBalances({
-        moloch,
+        mollusk,
         token: depositToken,
         userBalances: {
           [GUILD]: 0,
@@ -2749,19 +2749,19 @@ contract('Moloch', ([creator, summoner, applicant1, applicant2, processor, deleg
 
     it('require fails -  CancelProposal reverts if cancelled by new delegate', async () => {
 
-      await moloch.updateDelegateKey(processor, { from: summoner })
+      await mollusk.updateDelegateKey(processor, { from: summoner })
 
-      const emittedLogs = await  moloch.cancelProposal(firstProposalIndex, { from: processor }).should.be.rejectedWith(revertMessages.cancelProposalSolelyTheProposerCanCancel)
+      const emittedLogs = await  mollusk.cancelProposal(firstProposalIndex, { from: processor }).should.be.rejectedWith(revertMessages.cancelProposalSolelyTheProposerCanCancel)
 
     })
   })
 
   describe('updateDelegateKey', () => {
     it('require success - emits UpdateDelegateKey event', async () => {
-      const emittedLogs = await  moloch.updateDelegateKey(processor, { from: summoner })
+      const emittedLogs = await  mollusk.updateDelegateKey(processor, { from: summoner })
 
       await verifyMember({
-        moloch: moloch,
+        mollusk: mollusk,
         member: summoner,
         expectedDelegateKey: processor,
         expectedShares: 1,

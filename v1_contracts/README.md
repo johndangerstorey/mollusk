@@ -1,33 +1,33 @@
 STEAL THIS CODE
 
-# Moloch
+# Mollusk
 
-> Moloch the incomprehensible prison! Moloch the crossbone soulless jailhouse and Congress of sorrows! Moloch whose buildings are judgment! Moloch the vast stone of war! Moloch the stunned governments!
+> Mollusk the incomprehensible prison! Mollusk the crossbone soulless jailhouse and Congress of sorrows! Mollusk whose buildings are judgment! Mollusk the vast stone of war! Mollusk the stunned governments!
 >
-> Moloch whose mind is pure machinery! Moloch whose blood is running money! Moloch whose fingers are ten armies! Moloch whose breast is a cannibal dynamo! Moloch whose ear is a smoking tomb!
+> Mollusk whose mind is pure machinery! Mollusk whose blood is running money! Mollusk whose fingers are ten armies! Mollusk whose breast is a cannibal dynamo! Mollusk whose ear is a smoking tomb!
 
 ~ Allen Ginsberg, Howl
 
-Moloch is a grant-making DAO / Guild and a radical experiment in voluntary incentive alignment to overcome the "tragedy of the commons". Our objective is to accelerate the development of public Ethereum infrastructure that many teams need but don't want to pay for on their own. By pooling our ETH, teams building on Ethereum can collectively fund open-source work we decide is in our common interest.
+Mollusk is a grant-making DAO / Guild and a radical experiment in voluntary incentive alignment to overcome the "tragedy of the commons". Our objective is to accelerate the development of public Ethereum infrastructure that many teams need but don't want to pay for on their own. By pooling our ETH, teams building on Ethereum can collectively fund open-source work we decide is in our common interest.
 
-This documentation will focus on the Moloch DAO system design and smart contracts. For a deeper explanation of the philosophy behind Moloch, please read our [whitepaper](https://github.com/MolochVentures/Whitepaper/blob/master/Whitepaper.pdf) as well as the Slate Star Codex post, [Meditations on Moloch](http://slatestarcodex.com/2014/07/30/meditations-on-moloch/), which served as inspiration.
+This documentation will focus on the Mollusk DAO system design and smart contracts. For a deeper explanation of the philosophy behind Mollusk, please read our [whitepaper](https://github.com/MolluskVentures/Whitepaper/blob/master/Whitepaper.pdf) as well as the Slate Star Codex post, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-mollusk/), which served as inspiration.
 
 ## Design Principles
 
-In developing the Moloch DAO, we realized that the more Solidity we wrote, the greater the likelihood that we would lose everyone's money. In order to prioritize security, we took simplicity and elegance as our primary design principles. We consciously skipped many features, and the result is what we believe to be a Minimally Viable DAO.
+In developing the Mollusk DAO, we realized that the more Solidity we wrote, the greater the likelihood that we would lose everyone's money. In order to prioritize security, we took simplicity and elegance as our primary design principles. We consciously skipped many features, and the result is what we believe to be a Minimally Viable DAO.
 
 ## Overview
 
-Moloch is described by two smart contracts:
+Mollusk is described by two smart contracts:
 
-1. `Moloch.sol` - Responsible for managing membership & voting rights, proposal submissions, voting, and processing proposals based on the outcomes of the votes.
+1. `Mollusk.sol` - Responsible for managing membership & voting rights, proposal submissions, voting, and processing proposals based on the outcomes of the votes.
 2. `GuildBank.sol` - Responsible for managing Guild assets.
 
-Moloch has a native asset called `shares`. Shares are minted and assigned when a new member is accepted into the Guild and provide voting rights on new membership proposals. They are non-transferrable, but can be *irreversibly* redeemed at any time to collect a proportional share of all ETH held by the Guild in the Guild Bank.
+Mollusk has a native asset called `shares`. Shares are minted and assigned when a new member is accepted into the Guild and provide voting rights on new membership proposals. They are non-transferrable, but can be *irreversibly* redeemed at any time to collect a proportional share of all ETH held by the Guild in the Guild Bank.
 
-Moloch operates through the submission, voting on, and processing of a series of membership proposals. To combat spam, new membership proposals can only be submitted by existing members and require a 10 ETH deposit. Applicants who wish to join must find a Guild member to champion their proposal and have that member call `submitProposal` on their behalf. The membership proposal includes the number of shares the applicant is requesting, and either the amount of ETH the applicant is offering as tribute or a pledge that the applicant will complete some work that benefits the Guild.
+Mollusk operates through the submission, voting on, and processing of a series of membership proposals. To combat spam, new membership proposals can only be submitted by existing members and require a 10 ETH deposit. Applicants who wish to join must find a Guild member to champion their proposal and have that member call `submitProposal` on their behalf. The membership proposal includes the number of shares the applicant is requesting, and either the amount of ETH the applicant is offering as tribute or a pledge that the applicant will complete some work that benefits the Guild.
 
-All ETH offered as tribute is held in escrow by the `Moloch.sol` contract until the proposal vote is completed and processed. If a proposal vote passes, the applicant becomes a member, the shares requested are minted and assigned to them, and their tribute ETH is deposited into the `GuildBank.sol` contract. If a proposal vote is rejected, all tribute ETH is returned to the applicant. In either case, the 10 ETH deposit is returned to the member who submitted the proposal.
+All ETH offered as tribute is held in escrow by the `Mollusk.sol` contract until the proposal vote is completed and processed. If a proposal vote passes, the applicant becomes a member, the shares requested are minted and assigned to them, and their tribute ETH is deposited into the `GuildBank.sol` contract. If a proposal vote is rejected, all tribute ETH is returned to the applicant. In either case, the 10 ETH deposit is returned to the member who submitted the proposal.
 
 Proposals are voted on in the order they are submitted. The *voting period* for each proposal is 7 days. During the voting period, members can vote (only once, no redos) on a proposal by calling `submitVote`. There can be 5 proposals per day, so there can be a maximum of 35 proposals being voted on at any time (staggered by 4.8 hours). Proposal votes are determined by simple majority of votes cast on the proposal, with no quorum requirement.
 
@@ -37,7 +37,7 @@ At the end of the grace period, proposals are processed when anyone calls `proce
 
 #### Game Theory
 
-By allowing Guild members to ragequit and exit at any time, Moloch protects its members from 51% attacks and from supporting proposals they vehemently oppose.
+By allowing Guild members to ragequit and exit at any time, Mollusk protects its members from 51% attacks and from supporting proposals they vehemently oppose.
 
 In the worst case, one or more Guild members who control >50% of the shares could submit a proposal to grant themselves a ridiculous number of new shares, thereby diluting all other members of their claims to the Guild Bank assets and effectively stealing from them. If this were to happen, everyone else would ragequit during the grace period and take their share of the Guild Bank assets with them, and the proposal would have no impact.
 
@@ -55,7 +55,7 @@ To tests the contracts run `npm run test`.
 
 To compute their code coverage run `npm run coverage`.
 
-## Deploying an interacting with a Moloch DAO and a Pool
+## Deploying an interacting with a Mollusk DAO and a Pool
 
 This project includes Buidler tasks for deploying and using DAOs and Pools.
 
@@ -68,15 +68,15 @@ Follow this instructions to deploy a new DAO:
 
 1. Edit `buidler.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
 2. Edit `deployment-params.js`, setting your desired deployment parameters.
-3. Run `npx buidler moloch-deploy --network mainnet`
-4. Edit `buidler.config.js`, setting the address of the DAO in `networks.mainnet.deployedContracts.moloch`.
+3. Run `npx buidler mollusk-deploy --network mainnet`
+4. Edit `buidler.config.js`, setting the address of the DAO in `networks.mainnet.deployedContracts.mollusk`.
 
 #### Deploying a new Pool
 
 Follow this instructions to deploy a new Pool:
 
 1. Edit `buidler.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
-2. Make sure you have the right address in `buidler.config.js`'s `networks.mainnet.deployedContracts.moloch` field.
+2. Make sure you have the right address in `buidler.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
 3. Run `npx buidler pool-deploy --network mainnet --shares <shares> --tokens <tokens>` with the initial amount of tokens you want to donate to the pool, and how many shares you want in return.
 
 ### Interacting with the smart contracts
@@ -84,7 +84,7 @@ Follow this instructions to deploy a new Pool:
 This project has tasks to work with DAOs and Pools. To use them, you should first follow this instructions:
 
 1. Edit `buidler.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
-2. Make sure you have the right address in `buidler.config.js`'s `networks.mainnet.deployedContracts.moloch` field.
+2. Make sure you have the right address in `buidler.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
 3. If you want to use a Pool, make sure you have the right address in `buidler.config.js`'s `networks.mainnet.deployedContracts.pool` field.
 
 After following those instructions, you can run `npx buidler` to get a list with all the tasks:
@@ -98,12 +98,12 @@ AVAILABLE TASKS:
   console                       Opens a buidler console
   flatten                       Flattens and prints all contracts and their dependencies
   help                          Prints this message
-  moloch-deploy                 Deploys a new instance of the Moloch DAO
-  moloch-process-proposal       Processes a proposal
-  moloch-ragequit               Ragequits, burning some shares and getting tokens back
-  moloch-submit-proposal        Submits a proposal
-  moloch-submit-vote            Submits a vote
-  moloch-update-delegate        Updates your delegate
+  mollusk-deploy                 Deploys a new instance of the Mollusk DAO
+  mollusk-process-proposal       Processes a proposal
+  mollusk-ragequit               Ragequits, burning some shares and getting tokens back
+  mollusk-submit-proposal        Submits a proposal
+  mollusk-submit-vote            Submits a vote
+  mollusk-update-delegate        Updates your delegate
   pool-add-keeper               Adds a keeper
   pool-deploy                   Deploys a new instance of the pool and activates it
   pool-deposit                  Donates tokens to the pool
@@ -119,10 +119,10 @@ AVAILABLE TASKS:
 You can run `npx buidler help <task>` to get help about each tasks and their parameters. For example:
 
 ```
-$ npx buidler help moloch-submit-proposal
+$ npx buidler help mollusk-submit-proposal
 Buidler version 1.0.0-beta.7
 
-Usage: buidler [GLOBAL OPTIONS] moloch-submit-proposal --applicant <STRING> --details <STRING> --shares <STRING> --tribute <STRING>
+Usage: buidler [GLOBAL OPTIONS] mollusk-submit-proposal --applicant <STRING> --details <STRING> --shares <STRING> --tribute <STRING>
 
 OPTIONS:
 
@@ -131,14 +131,14 @@ OPTIONS:
   --shares      The number of shares requested
   --tribute     The number of token's wei offered as tribute
 
-moloch-submit-proposal: Submits a proposal
+mollusk-submit-proposal: Submits a proposal
 
 For global options help run: buidler help
 ```
 
-# Moloch.sol
+# Mollusk.sol
 
-SECURITY NOTE: CALLING `APPROVE` ON THE MOLOCH CONTRACT IS NOT SAFE. ONLY `APPROVE` THE
+SECURITY NOTE: CALLING `APPROVE` ON THE Mollusk CONTRACT IS NOT SAFE. ONLY `APPROVE` THE
 AMOUNT OF WETH YOU INTEND TO SEND AS TRIBUTE, AND CONFIRM FOR YOURSELF THAT YOUR
 APPLICATION PROPOSAL HAS THE CORRECT NUMBER OF SHARES REQUESTED. IF IT DOES
 NOT, IT IS YOUR RESPONSIBILITY TO ABORT THE PROPOSAL IMMEDIATELY.
@@ -236,7 +236,7 @@ The Vote enum reflects the possible values of a proposal vote by a member.
 Checks that the `msg.sender` is the address of a member with at least 1 share.
 ```
     modifier onlyMember {
-        require(members[msg.sender].shares > 0, "Moloch::onlyMember - not a member");
+        require(members[msg.sender].shares > 0, "Mollusk::onlyMember - not a member");
         _;
     }
 ```
@@ -246,7 +246,7 @@ Applied only to `ragequit` and `updateDelegateKey`.
 Checks that the `msg.sender` is the `delegateKey` of a member with at least 1 share.
 ```
     modifier onlyDelegate {
-        require(members[memberAddressByDelegateKey[msg.sender]].shares > 0, "Moloch::onlyDelegate - not a delegate");
+        require(members[memberAddressByDelegateKey[msg.sender]].shares > 0, "Mollusk::onlyDelegate - not a delegate");
         _;
     }
 ```
@@ -255,11 +255,11 @@ Applied only to `submitProposal` and `submitVote`.
 
 ## Functions
 
-### Moloch Constructor
+### Mollusk Constructor
 1. Sets the `approvedToken` ERC20 contract reference.
 2. Deploys a new `GuildBank.sol` contract and saves the reference.
 3. Saves passed in values for global constants `periodDuration`, `votingPeriodLength`, `gracePeriodLength`, `abortWindow`, `proposalDeposit`, `dilutionBound`,  and `processingReward`.
-4. Saves the start time of Moloch `summoningTime = now`.
+4. Saves the start time of Mollusk `summoningTime = now`.
 5. Mints 1 share for the `summoner` and saves their membership.
 
 ```
@@ -274,17 +274,17 @@ Applied only to `submitProposal` and `submitVote`.
         uint256 _dilutionBound,
         uint256 _processingReward
     ) public {
-        require(summoner != address(0), "Moloch::constructor - summoner cannot be 0");
-        require(_approvedToken != address(0), "Moloch::constructor - _approvedToken cannot be 0");
-        require(_periodDuration > 0, "Moloch::constructor - _periodDuration cannot be 0");
-        require(_votingPeriodLength > 0, "Moloch::constructor - _votingPeriodLength cannot be 0");
-        require(_votingPeriodLength <= MAX_VOTING_PERIOD_LENGTH, "Moloch::constructor - _votingPeriodLength exceeds limit");
-        require(_gracePeriodLength <= MAX_GRACE_PERIOD_LENGTH, "Moloch::constructor - _gracePeriodLength exceeds limit");
-        require(_abortWindow > 0, "Moloch::constructor - _abortWindow cannot be 0");
-        require(_abortWindow <= _votingPeriodLength, "Moloch::constructor - _abortWindow must be smaller than _votingPeriodLength");
-        require(_dilutionBound > 0, "Moloch::constructor - _dilutionBound cannot be 0");
-        require(_dilutionBound <= MAX_DILUTION_BOUND, "Moloch::constructor - _dilutionBound exceeds limit");
-        require(_proposalDeposit >= _processingReward, "Moloch::constructor - _proposalDeposit cannot be smaller than _processingReward");
+        require(summoner != address(0), "Mollusk::constructor - summoner cannot be 0");
+        require(_approvedToken != address(0), "Mollusk::constructor - _approvedToken cannot be 0");
+        require(_periodDuration > 0, "Mollusk::constructor - _periodDuration cannot be 0");
+        require(_votingPeriodLength > 0, "Mollusk::constructor - _votingPeriodLength cannot be 0");
+        require(_votingPeriodLength <= MAX_VOTING_PERIOD_LENGTH, "Mollusk::constructor - _votingPeriodLength exceeds limit");
+        require(_gracePeriodLength <= MAX_GRACE_PERIOD_LENGTH, "Mollusk::constructor - _gracePeriodLength exceeds limit");
+        require(_abortWindow > 0, "Mollusk::constructor - _abortWindow cannot be 0");
+        require(_abortWindow <= _votingPeriodLength, "Mollusk::constructor - _abortWindow must be smaller than _votingPeriodLength");
+        require(_dilutionBound > 0, "Mollusk::constructor - _dilutionBound cannot be 0");
+        require(_dilutionBound <= MAX_DILUTION_BOUND, "Mollusk::constructor - _dilutionBound exceeds limit");
+        require(_proposalDeposit >= _processingReward, "Mollusk::constructor - _proposalDeposit cannot be smaller than _processingReward");
 
         approvedToken = IERC20(_approvedToken);
 
@@ -312,7 +312,7 @@ Applied only to `submitProposal` and `submitVote`.
 ### submitProposal
 At any time, members can submit new proposals using their `delegateKey`.
 1. Updates `totalSharesRequested` with the shares requested by the proposal.
-2. Transfers the proposal deposit and tribute ETH to the `Moloch.sol` contract to be held in escrow until the proposal vote is completed and processed.
+2. Transfers the proposal deposit and tribute ETH to the `Mollusk.sol` contract to be held in escrow until the proposal vote is completed and processed.
 4. Calculates the proposal starting period, creates a new proposal, and pushes the proposal to the end of the `proposalQueue`.
 
 ```
@@ -325,22 +325,22 @@ At any time, members can submit new proposals using their `delegateKey`.
         public
         onlyDelegate
     {
-        require(applicant != address(0), "Moloch::submitProposal - applicant cannot be 0");
+        require(applicant != address(0), "Mollusk::submitProposal - applicant cannot be 0");
 
         // Make sure we won't run into overflows when doing calculations with shares.
         // Note that totalShares + totalSharesRequested + sharesRequested is an upper bound
         // on the number of shares that can exist until this proposal has been processed.
-        require(totalShares.add(totalSharesRequested).add(sharesRequested) <= MAX_NUMBER_OF_SHARES, "Moloch::submitProposal - too many shares requested");
+        require(totalShares.add(totalSharesRequested).add(sharesRequested) <= MAX_NUMBER_OF_SHARES, "Mollusk::submitProposal - too many shares requested");
 
         totalSharesRequested = totalSharesRequested.add(sharesRequested);
 
         address memberAddress = memberAddressByDelegateKey[msg.sender];
 
-        // collect proposal deposit from proposer and store it in the Moloch until the proposal is processed
-        require(approvedToken.transferFrom(msg.sender, address(this), proposalDeposit), "Moloch::submitProposal - proposal deposit token transfer failed");
+        // collect proposal deposit from proposer and store it in the Mollusk until the proposal is processed
+        require(approvedToken.transferFrom(msg.sender, address(this), proposalDeposit), "Mollusk::submitProposal - proposal deposit token transfer failed");
 
-        // collect tribute from applicant and store it in the Moloch until the proposal is processed
-        require(approvedToken.transferFrom(applicant, address(this), tokenTribute), "Moloch::submitProposal - tribute token transfer failed");
+        // collect tribute from applicant and store it in the Mollusk until the proposal is processed
+        require(approvedToken.transferFrom(applicant, address(this), tokenTribute), "Mollusk::submitProposal - tribute token transfer failed");
 
         // compute startingPeriod for proposal
         uint256 startingPeriod = max(
@@ -388,17 +388,17 @@ While a proposal is in its voting period, members can submit their vote using th
         address memberAddress = memberAddressByDelegateKey[msg.sender];
         Member storage member = members[memberAddress];
 
-        require(proposalIndex < proposalQueue.length, "Moloch::submitVote - proposal does not exist");
+        require(proposalIndex < proposalQueue.length, "Mollusk::submitVote - proposal does not exist");
         Proposal storage proposal = proposalQueue[proposalIndex];
 
-        require(uintVote < 3, "Moloch::submitVote - uintVote must be less than 3");
+        require(uintVote < 3, "Mollusk::submitVote - uintVote must be less than 3");
         Vote vote = Vote(uintVote);
 
-        require(getCurrentPeriod() >= proposal.startingPeriod, "Moloch::submitVote - voting period has not started");
-        require(!hasVotingPeriodExpired(proposal.startingPeriod), "Moloch::submitVote - proposal voting period has expired");
-        require(proposal.votesByMember[memberAddress] == Vote.Null, "Moloch::submitVote - member has already voted on this proposal");
-        require(vote == Vote.Yes || vote == Vote.No, "Moloch::submitVote - vote must be either Yes or No");
-        require(!proposal.aborted, "Moloch::submitVote - proposal has been aborted");
+        require(getCurrentPeriod() >= proposal.startingPeriod, "Mollusk::submitVote - voting period has not started");
+        require(!hasVotingPeriodExpired(proposal.startingPeriod), "Mollusk::submitVote - proposal voting period has expired");
+        require(proposal.votesByMember[memberAddress] == Vote.Null, "Mollusk::submitVote - member has already voted on this proposal");
+        require(vote == Vote.Yes || vote == Vote.No, "Mollusk::submitVote - vote must be either Yes or No");
+        require(!proposal.aborted, "Mollusk::submitVote - proposal has been aborted");
 
         // store vote
         proposal.votesByMember[memberAddress] = vote;
@@ -443,12 +443,12 @@ After a proposal has completed its grace period, anyone can call `processProposa
 
 ```
     function processProposal(uint256 proposalIndex) public {
-        require(proposalIndex < proposalQueue.length, "Moloch::processProposal - proposal does not exist");
+        require(proposalIndex < proposalQueue.length, "Mollusk::processProposal - proposal does not exist");
         Proposal storage proposal = proposalQueue[proposalIndex];
 
-        require(getCurrentPeriod() >= proposal.startingPeriod.add(votingPeriodLength).add(gracePeriodLength), "Moloch::processProposal - proposal is not ready to be processed");
-        require(proposal.processed == false, "Moloch::processProposal - proposal has already been processed");
-        require(proposalIndex == 0 || proposalQueue[proposalIndex.sub(1)].processed, "Moloch::processProposal - previous proposal must be processed");
+        require(getCurrentPeriod() >= proposal.startingPeriod.add(votingPeriodLength).add(gracePeriodLength), "Mollusk::processProposal - proposal is not ready to be processed");
+        require(proposal.processed == false, "Mollusk::processProposal - proposal has already been processed");
+        require(proposalIndex == 0 || proposalQueue[proposalIndex.sub(1)].processed, "Mollusk::processProposal - previous proposal must be processed");
 
         proposal.processed = true;
         totalSharesRequested = totalSharesRequested.sub(proposal.sharesRequested);
@@ -489,7 +489,7 @@ After a proposal has completed its grace period, anyone can call `processProposa
             // transfer tokens to guild bank
             require(
                 approvedToken.transfer(address(guildBank), proposal.tokenTribute),
-                "Moloch::processProposal - token transfer to guild bank failed"
+                "Mollusk::processProposal - token transfer to guild bank failed"
             );
 
         // PROPOSAL FAILED OR ABORTED
@@ -497,20 +497,20 @@ After a proposal has completed its grace period, anyone can call `processProposa
             // return all tokens to the applicant
             require(
                 approvedToken.transfer(proposal.applicant, proposal.tokenTribute),
-                "Moloch::processProposal - failing vote token transfer failed"
+                "Mollusk::processProposal - failing vote token transfer failed"
             );
         }
 
         // send msg.sender the processingReward
         require(
             approvedToken.transfer(msg.sender, processingReward),
-            "Moloch::processProposal - failed to send processing reward to msg.sender"
+            "Mollusk::processProposal - failed to send processing reward to msg.sender"
         );
 
         // return deposit to proposer (subtract processing reward)
         require(
             approvedToken.transfer(proposal.proposer, proposalDeposit.sub(processingReward)),
-            "Moloch::processProposal - failed to return proposal deposit to proposer"
+            "Mollusk::processProposal - failed to return proposal deposit to proposer"
         );
 
         emit ProcessProposal(
@@ -540,9 +540,9 @@ At any time, so long as a member has not voted YES on any proposal in the voting
 
         Member storage member = members[msg.sender];
 
-        require(member.shares >= sharesToBurn, "Moloch::ragequit - insufficient shares");
+        require(member.shares >= sharesToBurn, "Mollusk::ragequit - insufficient shares");
 
-        require(canRagequit(member.highestIndexYesVote), "Moloch::ragequit - cant ragequit until highest index proposal member voted YES on is processed");
+        require(canRagequit(member.highestIndexYesVote), "Mollusk::ragequit - cant ragequit until highest index proposal member voted YES on is processed");
 
         // burn shares
         member.shares = member.shares.sub(sharesToBurn);
@@ -551,7 +551,7 @@ At any time, so long as a member has not voted YES on any proposal in the voting
         // instruct guildBank to transfer fair share of tokens to the ragequitter
         require(
             guildBank.withdraw(msg.sender, sharesToBurn, initialTotalShares),
-            "Moloch::ragequit - withdrawal of tokens from guildBank failed"
+            "Mollusk::ragequit - withdrawal of tokens from guildBank failed"
         );
 
         emit Ragequit(msg.sender, sharesToBurn);
@@ -560,7 +560,7 @@ At any time, so long as a member has not voted YES on any proposal in the voting
 
 ### abort
 
-One vulnerability found during audit was that interacting with the Moloch contract is that **calling "approve" with wETH is not safe**. When new applicants or existing members approve the transfer of some wETH to prepare for a proposal submission, any member could submit a proposal pointing to that applicant, `transferFrom` their approved tokens to Moloch, but maliciously input fewer shares than the applicant was expecting, effectively stealing from them. If this were to happen the applicant would find themselves appealing to the good will of the Guild members to vote **No** on the proposal and return the applicant's funds.
+One vulnerability found during audit was that interacting with the Mollusk contract is that **calling "approve" with wETH is not safe**. When new applicants or existing members approve the transfer of some wETH to prepare for a proposal submission, any member could submit a proposal pointing to that applicant, `transferFrom` their approved tokens to Mollusk, but maliciously input fewer shares than the applicant was expecting, effectively stealing from them. If this were to happen the applicant would find themselves appealing to the good will of the Guild members to vote **No** on the proposal and return the applicant's funds.
 
 To address this, a proposal applicant can call `abort` to cancel the proposal, disable all future votes, and immediately receive their money back. The applicant has from the time the proposal is submitted to the time the `abortWindow` expires (1 day into the voting period) to do this.
 
@@ -571,12 +571,12 @@ Aborting a proposal does **not** immediately return the proposer's deposit. They
 3. Return all tribute tokens to the `applicant`.
 ```
     function abort(uint256 proposalIndex) public {
-        require(proposalIndex < proposalQueue.length, "Moloch::abort - proposal does not exist");
+        require(proposalIndex < proposalQueue.length, "Mollusk::abort - proposal does not exist");
         Proposal storage proposal = proposalQueue[proposalIndex];
 
-        require(msg.sender == proposal.applicant, "Moloch::abort - msg.sender must be applicant");
-        require(getCurrentPeriod() < proposal.startingPeriod.add(abortWindow), "Moloch::abort - abort window must not have passed");
-        require(!proposal.aborted, "Moloch::abort - proposal must not have already been aborted");
+        require(msg.sender == proposal.applicant, "Mollusk::abort - msg.sender must be applicant");
+        require(getCurrentPeriod() < proposal.startingPeriod.add(abortWindow), "Mollusk::abort - abort window must not have passed");
+        require(!proposal.aborted, "Mollusk::abort - proposal must not have already been aborted");
 
         uint256 tokensToAbort = proposal.tokenTribute;
         proposal.tokenTribute = 0;
@@ -585,14 +585,14 @@ Aborting a proposal does **not** immediately return the proposer's deposit. They
         // return all tokens to the applicant
         require(
             approvedToken.transfer(proposal.applicant, tokensToAbort),
-            "Moloch::processProposal - failing vote token transfer failed"
+            "Mollusk::processProposal - failing vote token transfer failed"
         );
 
         emit Abort(proposalIndex, msg.sender);
     }
 ```
 
-Please check the audit report for the recommended fix. We agree that it makes sense, but in the interest of time we did not implement it. If any members are found abusing this vulnerability, we will prioritize deploying an upgraded Moloch contract which fixes it, and migrating to that.
+Please check the audit report for the recommended fix. We agree that it makes sense, but in the interest of time we did not implement it. If any members are found abusing this vulnerability, we will prioritize deploying an upgraded Mollusk contract which fixes it, and migrating to that.
 
 ### updateDelegateKey
 
@@ -609,12 +609,12 @@ use, or back to their member address.
 
 ```
     function updateDelegateKey(address newDelegateKey) public onlyMember {
-        require(newDelegateKey != address(0), "Moloch::updateDelegateKey - newDelegateKey cannot be 0");
+        require(newDelegateKey != address(0), "Mollusk::updateDelegateKey - newDelegateKey cannot be 0");
 
         // skip checks if member is setting the delegate key to their member address
         if (newDelegateKey != msg.sender) {
-            require(!members[newDelegateKey].exists, "Moloch::updateDelegateKey - cant overwrite existing members");
-            require(!members[memberAddressByDelegateKey[newDelegateKey]].exists, "Moloch::updateDelegateKey - cant overwrite existing delegate keys");
+            require(!members[newDelegateKey].exists, "Mollusk::updateDelegateKey - cant overwrite existing members");
+            require(!members[memberAddressByDelegateKey[newDelegateKey]].exists, "Mollusk::updateDelegateKey - cant overwrite existing delegate keys");
         }
 
         Member storage member = members[msg.sender];
@@ -663,12 +663,12 @@ Returns the length of the proposal queue.
 Returns true if the `highestIndexYesVote` proposal has been processed.
 ```
     function canRagequit(uint256 highestIndexYesVote) public view returns (bool) {
-        require(highestIndexYesVote < proposalQueue.length, "Moloch::canRagequit - proposal does not exist");
+        require(highestIndexYesVote < proposalQueue.length, "Mollusk::canRagequit - proposal does not exist");
         return proposalQueue[highestIndexYesVote].processed;
     }
 ```
 
-Note: At Moloch's inception, there will have been no proposals yet so the
+Note: At Mollusk's inception, there will have been no proposals yet so the
 `proposalQueue.length` will be 0. This means no one can ragequit until at least
 one proposal has been processed. Fortunately, this only affects the summoner,
 and because the Guild Bank will have no value until the first proposals have
@@ -684,8 +684,8 @@ passed anyways, it isn't a concern.
 #### getMemberProposalVote
 ```
     function getMemberProposalVote(address memberAddress, uint256 proposalIndex) public view returns (Vote) {
-        require(members[memberAddress].exists, "Moloch::getMemberProposalVote - member doesn't exist");
-        require(proposalIndex < proposalQueue.length, "Moloch::getMemberProposalVote - proposal doesn't exist");
+        require(members[memberAddress].exists, "Mollusk::getMemberProposalVote - member doesn't exist");
+        require(proposalIndex < proposalQueue.length, "Mollusk::getMemberProposalVote - proposal doesn't exist");
         return proposalQueue[proposalIndex].votesByMember[memberAddress];
     }
 ```
@@ -701,7 +701,7 @@ passed anyways, it isn't a concern.
 ## Functions
 
 ### constructor
-1. Sets the `approvedToken` and saves the contract reference. Called by the  `Moloch.sol` constructor.
+1. Sets the `approvedToken` and saves the contract reference. Called by the  `Mollusk.sol` constructor.
 ```
     constructor(address approvedTokenAddress) public {
         approvedToken = ERC20(approvedTokenAddress);
@@ -710,7 +710,7 @@ passed anyways, it isn't a concern.
 
 ### withdraw
 
-Is called by the owner - the `Moloch.sol` contract - in the `ragequit`
+Is called by the owner - the `Mollusk.sol` contract - in the `ragequit`
 function.
 
 1. Transfer a proportional share of ETH held by the guild bank to the

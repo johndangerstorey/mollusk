@@ -1,5 +1,5 @@
 {
-  "name": "moloch",
+  "name": "mollusk",
   "version": "1.0.0",
   "description": "",
   "devDependencies": {
@@ -32,13 +32,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MolochVentures/moloch.git"
+    "url": "git+https://github.com/MolluskVentures/mollusk.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MolochVentures/moloch/issues"
+    "url": "https://github.com/MolluskVentures/mollusk/issues"
   },
-  "homepage": "https://github.com/MolochVentures/moloch#readme"
+  "homepage": "https://github.com/MolluskVentures/mollusk#readme"
 }

@@ -1,7 +1,7 @@
 ## Mollusk V2
 ![WORSHIP NOTHING](https://www.sciencealert.com/images/2017-04/processed/octopus-cephalopod-rna-evolution_1024.jpg)
 
-Reverently stolen from the beautifully crafted [Moloch DAO](https://github.com/MolochVentures/moloch/). Enabling all those energetically & supersticiously inclined to discuss governance models without casually invoking the name of a powerful demonic deity 👼 🐙 👹
+Reverently stolen from the beautifully crafted [Mollusk DAO](https://github.com/MolluskVentures/mollusk/). Enabling all those energetically & supersticiously inclined to discuss governance models without casually invoking the name of a powerful demonic deity 👼 🐙 👹
 
 
 > Mollusk whose love is endless oil and stone! Mollusk whose soul is electricity and banks! Mollusk whose poverty is the specter of genius! Mollusk whose fate is a cloud of sexless hydrogen! Mollusk whose name is the Mind!
@@ -10,9 +10,9 @@ Reverently stolen from the beautifully crafted [Moloch DAO](https://github.com/M
 
 ~ Allen "Under the Sea" Ginsberg, Howl
 
-Mollusk v2 is an upgraded version of MolluskDAO that allows the DAO to acquire and spend multiple different tokens, instead of just one. It introduces the Guild Kick proposal type which allows members to forcibly remove another member (their assets are refunded in full). It also also allows for issuing non-voting shares in the form of Loot. Finally, v2 fixes the "unsafe approval" issue raised in the original [Nomic Labs audit](https://medium.com/nomic-labs-blog/moloch-dao-audit-report-f31505e85c70).
+Mollusk v2 is an upgraded version of MolluskDAO that allows the DAO to acquire and spend multiple different tokens, instead of just one. It introduces the Guild Kick proposal type which allows members to forcibly remove another member (their assets are refunded in full). It also also allows for issuing non-voting shares in the form of Loot. Finally, v2 fixes the "unsafe approval" issue raised in the original [Nomic Labs audit](https://medium.com/nomic-labs-blog/mollusk-dao-audit-report-f31505e85c70).
 
-For a primer on Mollusk v1, please visit the [original documentation](https://github.com/MolochVentures/moloch/tree/minimal-revenue/v1_contracts).
+For a primer on Mollusk v1, please visit the [original documentation](https://github.com/MolluskVentures/mollusk/tree/minimal-revenue/v1_contracts).
 
 ## Design Principles
 In developing Mollusk v2, we stuck with our ruthless minimalism, deviating as little as possible from the original while dramatically improving utility. We skipped many features again and believe our design represents a Minimally Viable For-Profit DAO, yet one flexible enough to support a variety of use decentralized cases, including venture funds, hedge funds, investment banks, and incubators.
@@ -29,7 +29,7 @@ In addition to standard proposals above, there are two special proposals. The fi
 
 In order to limit legal liability on members of a for-profit deployment of Mollusk v2, the members may opt to form a [LAO](https://www.thelao.io/). LAOs are DAOs wrapped in a legally compliant entity, such as an LLC or C-Corp. The LAO can enter legal contracts, custody offchain assets (e.g. SAFTs), and distribute dividends. Investors in a LAO must be accredited, but service providers compensated in LAO shares can earn their shares of the LAO portfolio.
 
-The current Mollusk v2 contract standard was designed through a [collaborative effort](https://medium.com/@thelaoofficial/the-lao-joins-forces-with-moloch-dao-and-metacartel-to-begin-to-standardize-dao-related-smart-b6ee4b0db071) between MetaCartel, ConsenSys’s The LAO, and Mollusk. The MetaCartel [Venture DAO](https://twitter.com/venture_dao) is expected to be the first deployment of Mollusk v2 and blaze the trail for other for-profit DAOs to follow. Check out the Venture DAO [whitepaper](https://github.com/metacartel/MCV/blob/master/MCV-Whitepaper.md) for more information.
+The current Mollusk v2 contract standard was designed through a [collaborative effort](https://medium.com/@thelaoofficial/the-lao-joins-forces-with-mollusk-dao-and-metacartel-to-begin-to-standardize-dao-related-smart-b6ee4b0db071) between MetaCartel, ConsenSys’s The LAO, and Mollusk. The MetaCartel [Venture DAO](https://twitter.com/venture_dao) is expected to be the first deployment of Mollusk v2 and blaze the trail for other for-profit DAOs to follow. Check out the Venture DAO [whitepaper](https://github.com/metacartel/MCV/blob/master/MCV-Whitepaper.md) for more information.
 
 ##### Security Tokens
 
@@ -61,15 +61,15 @@ Follow this instructions to deploy a new DAO:
 
 1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
 2. Edit `deployment-params.js`, setting your desired deployment parameters.
-3. Run `npx hardhat moloch-deploy --network mainnet`
-4. Edit `hardhat.config.js`, setting the address of the DAO in `networks.mainnet.deployedContracts.moloch`.
+3. Run `npx hardhat mollusk-deploy --network mainnet`
+4. Edit `hardhat.config.js`, setting the address of the DAO in `networks.mainnet.deployedContracts.mollusk`.
 
 #### Deploying a new Pool
 
 Follow this instructions to deploy a new Pool:
 
 1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
-2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.moloch` field.
+2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
 3. Run `npx hardhat pool-deploy --network mainnet --shares <shares> --tokens <tokens>` with the initial amount of tokens you want to donate to the pool, and how many shares you want in return.
 
 ### Interacting with the smart contracts
@@ -77,7 +77,7 @@ Follow this instructions to deploy a new Pool:
 This project has tasks to work with DAOs and Pools. To use them, you should first follow this instructions:
 
 1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
-2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.moloch` field.
+2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
 3. If you want to use a Pool, make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.pool` field.
 
 After following those instructions, you can run `npx hardhat` to get a list with all the tasks:
@@ -91,12 +91,12 @@ AVAILABLE TASKS:
   console                       Opens a hardhat console
   flatten                       Flattens and prints all contracts and their dependencies
   help                          Prints this message
-  moloch-deploy                 Deploys a new instance of the Mollusk DAO
-  moloch-process-proposal       Processes a proposal
-  moloch-ragequit               Ragequits, burning some shares and getting tokens back
-  moloch-submit-proposal        Submits a proposal
-  moloch-submit-vote            Submits a vote
-  moloch-update-delegate        Updates your delegate
+  mollusk-deploy                 Deploys a new instance of the Mollusk DAO
+  mollusk-process-proposal       Processes a proposal
+  mollusk-ragequit               Ragequits, burning some shares and getting tokens back
+  mollusk-submit-proposal        Submits a proposal
+  mollusk-submit-vote            Submits a vote
+  mollusk-update-delegate        Updates your delegate
   pool-add-keeper               Adds a keeper
   pool-deploy                   Deploys a new instance of the pool and activates it
   pool-deposit                  Donates tokens to the pool
@@ -112,10 +112,10 @@ AVAILABLE TASKS:
 You can run `npx hardhat help <task>` to get help about each tasks and their parameters. For example:
 
 ```
-$ npx hardhat help moloch-submit-proposal
+$ npx hardhat help mollusk-submit-proposal
 hardhat version 2.0.0
 
-Usage: hardhat [GLOBAL OPTIONS] moloch-submit-proposal --applicant <STRING> --details <STRING> --shares <STRING> --tribute <STRING>
+Usage: hardhat [GLOBAL OPTIONS] mollusk-submit-proposal --applicant <STRING> --details <STRING> --shares <STRING> --tribute <STRING>
 
 OPTIONS:
 
@@ -124,7 +124,7 @@ OPTIONS:
   --shares      The number of shares requested
   --tribute     The number of token's wei offered as tribute
 
-moloch-submit-proposal: Submits a proposal
+mollusk-submit-proposal: Submits a proposal
 
 For global options help run: hardhat help
 ```
@@ -132,7 +132,7 @@ For global options help run: hardhat help
 # Changelog v2
 
 ![Many
-Mollusks](https://cdn.discordapp.com/attachments/583914506389028865/643303589254529025/molochs.jpeg)
+Mollusks](https://cdn.discordapp.com/attachments/583914506389028865/643303589254529025/mollusks.jpeg)
 
 > To expect God to care about you or your personal values or the values of your civilization, that’s hubris.
 
@@ -144,9 +144,9 @@ Mollusks](https://cdn.discordapp.com/attachments/583914506389028865/643303589254
 
 > I am a transhumanist because I do not have enough hubris not to try to kill God.
 
-~ Scott Alexander, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-moloch/)
+~ Scott Alexander, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-mollusk/)
 
-Mollusk v2 is minimally different from Mollusk v1, please read the [original documentation](https://github.com/MolochVentures/moloch/tree/master/v1_contracts) first, and then the changelog below.
+Mollusk v2 is minimally different from Mollusk v1, please read the [original documentation](https://github.com/MolluskVentures/mollusk/tree/master/v1_contracts) first, and then the changelog below.
 
 ## Mollusk.sol
 
@@ -254,7 +254,7 @@ Track the whitelisted tokens in a mapping (to check if that token is on the whit
 
 
 ### Submit -> Sponsor Flow
-As Nomic Labs explained in their [audit report](https://medium.com/nomic-labs-blog/moloch-dao-audit-report-f31505e85c70), approving ERC20 tokens to Mollusk is unsafe.
+As Nomic Labs explained in their [audit report](https://medium.com/nomic-labs-blog/mollusk-dao-audit-report-f31505e85c70), approving ERC20 tokens to Mollusk is unsafe.
 
 > Approving the Mollusk DAO to transfer your tokens is, in general, unsafe. Users need to approve tokens to be a proposer or an applicant, but they can end up as the applicant of an unwanted proposal if someone attacks them, as explained in [MOL-L01].
 
