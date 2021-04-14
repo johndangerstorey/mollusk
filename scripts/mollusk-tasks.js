@@ -20,7 +20,7 @@ task('mollusk-deploy', 'Deploys a new instance of the Mollusk DAO')
     // Make sure everything is compiled
     await run('compile')
 
-    console.log('Deploying a new DAO to the network ' + buidlerArguments.network)
+    console.log('Deploying a new DAO to the network ' + hardhatArguments.network)
     console.log(
       'Deployment parameters:\n',
       '  summoner:', deploymentParams.SUMMONER, '\n',
@@ -59,7 +59,7 @@ task('mollusk-deploy', 'Deploys a new instance of the Mollusk DAO')
 
     console.log("")
     console.log('Mollusk DAO deployed. Address:', mollusk.address)
-    console.log("Set this address in buidler.config.js's networks section to use the other tasks")
+    console.log("Set this address in hardhat.config.js's networks section to use the other tasks")
   })
 
 task('mollusk-submit-proposal', 'Submits a proposal')
