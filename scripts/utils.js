@@ -1,7 +1,7 @@
 const BN = require('bn.js')
 
 // These functions are meant to be run from tasks, so the
-// BuidlerRuntimeEnvironment is available in the global scope.
+// hardhatRuntimeEnvironment is available in the global scope.
 
 /**
  * Returns the deployed instance of the Mollusk DAO, or undefined if its
@@ -10,7 +10,7 @@ const BN = require('bn.js')
 async function getDeployedMollusk () {
   const molluskAddress = getMolluskAddress()
   if (!molluskAddress) {
-    console.error(`Please, set the DAO's address in buidler.config.js's networks.${buidlerArguments.network}.deployedContracts.mollusk`)
+    console.error(`Please, set the DAO's address in hardhat.config.js's networks.${hardhatArguments.network}.deployedContracts.mollusk`)
     return
   }
 
@@ -25,7 +25,7 @@ async function getDeployedMollusk () {
 async function getDeployedPool () {
   const poolAddress = getPoolAddress()
   if (!poolAddress) {
-    console.error(`Please, set the Pool's address in buidler.config.js's networks.${buidlerArguments.network}.deployedContracts.pool`)
+    console.error(`Please, set the Pool's address in hardhat.config.js's networks.${hardhatArguments.network}.deployedContracts.pool`)
     return
   }
 
@@ -54,7 +54,7 @@ async function getApprovedToken () {
  * it hasn't been set.
  */
 function getMolluskAddress () {
-  return config.networks[buidlerArguments.network].deployedContracts.mollusk
+  return config.networks[hardhatArguments.network].deployedContracts.mollusk
 }
 
 /**
@@ -62,7 +62,7 @@ function getMolluskAddress () {
  * it hasn't been set.
  */
 function getPoolAddress () {
-  return config.networks[buidlerArguments.network].deployedContracts.pool
+  return config.networks[hardhatArguments.network].deployedContracts.pool
 }
 
 async function giveAllowance (tokenContract, allowanceGiver, receiverContract, amount) {
