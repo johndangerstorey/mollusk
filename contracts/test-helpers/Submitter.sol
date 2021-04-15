@@ -1,17 +1,17 @@
-// helper for testing moloch.submitProposal return value
+// helper for testing mollusk.submitProposal return value
 
 pragma solidity 0.5.3;
 
-import "../Moloch.sol";
+import "../Mollusk.sol";
 
 contract Submitter {
 
   event Submit(uint256 proposalId);
 
-  Moloch public moloch; // moloch contract reference
+  Mollusk public mollusk; // mollusk contract reference
 
-  constructor(address molochAddress) public {
-    moloch = Moloch(molochAddress);
+  constructor(address molluskAddress) public {
+    mollusk = Mollusk(molluskAddress);
   }
 
   function submitProposal(
@@ -24,7 +24,7 @@ contract Submitter {
     address paymentToken,
     string memory details
   ) public {
-    uint256 proposalId = moloch.submitProposal(
+    uint256 proposalId = mollusk.submitProposal(
       applicant,
       sharesRequested,
       lootRequested,
@@ -42,7 +42,7 @@ contract Submitter {
     address tokenToWhitelist,
     string memory details
   ) public {
-    uint256 proposalId = moloch.submitWhitelistProposal(
+    uint256 proposalId = mollusk.submitWhitelistProposal(
       tokenToWhitelist,
       details
     );
@@ -54,7 +54,7 @@ contract Submitter {
     address memberToKick,
     string memory details
   ) public {
-    uint256 proposalId = moloch.submitGuildKickProposal(
+    uint256 proposalId = mollusk.submitGuildKickProposal(
       memberToKick,
       details
     );

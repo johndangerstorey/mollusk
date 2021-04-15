@@ -3,7 +3,7 @@ const { usePlugin } = hardhat;
 
 require("@nomiclabs/hardhat-etherscan");
 require("@nomiclabs/hardhat-truffle5");
-require("./scripts/moloch-tasks");
+require("./scripts/mollusk-tasks");
 require("./scripts/pool-tasks");
 
 const INFURA_API_KEY = "";
@@ -16,7 +16,7 @@ module.exports = {
     develop: {
       url: "http://localhost:8545",
       deployedContracts: {
-        moloch: "",
+        mollusk: "",
         pool: ""
       }
     },
@@ -24,7 +24,7 @@ module.exports = {
       url: `https://ropsten.infura.io/v3/${INFURA_API_KEY}`,
       accounts: [ROPSTEN_PRIVATE_KEY],
       deployedContracts: {
-        moloch: "",
+        mollusk: "",
         pool: ""
       }
     },
@@ -32,7 +32,7 @@ module.exports = {
       url: `https://mainnet.infura.io/v3/${INFURA_API_KEY}`,
       accounts: [MAINNET_PRIVATE_KEY],
       deployedContracts: {
-        moloch: "0x1fd169A4f5c59ACf79d0Fd5d91D1201EF1Bce9f1", // The original Moloch
+        mollusk: "0x1fd169A4f5c59ACf79d0Fd5d91D1201EF1Bce9f1", // The original Mollusk
         pool: ""
       }
     }, */

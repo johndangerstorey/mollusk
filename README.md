@@ -61,15 +61,15 @@ Follow this instructions to deploy a new DAO:
 
 1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
 2. Edit `deployment-params.js`, setting your desired deployment parameters.
-3. Run `npx hardhat moloch-deploy --network mainnet`
-4. Edit `hardhat.config.js`, setting the address of the DAO in `networks.mainnet.deployedContracts.moloch`.
+3. Run `npx hardhat mollusk-deploy --network mainnet`
+4. Edit `hardhat.config.js`, setting the address of the DAO in `networks.mainnet.deployedContracts.mollusk`.
 
 #### Deploying a new Pool
 
 Follow this instructions to deploy a new Pool:
 
 1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
-2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.moloch` field.
+2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
 3. Run `npx hardhat pool-deploy --network mainnet --shares <shares> --tokens <tokens>` with the initial amount of tokens you want to donate to the pool, and how many shares you want in return.
 
 ### Interacting with the smart contracts
@@ -77,7 +77,7 @@ Follow this instructions to deploy a new Pool:
 This project has tasks to work with DAOs and Pools. To use them, you should first follow this instructions:
 
 1. Edit `hardhat.config.js`, setting the values for `INFURA_API_KEY` and `MAINNET_PRIVATE_KEY`.
-2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.moloch` field.
+2. Make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.mollusk` field.
 3. If you want to use a Pool, make sure you have the right address in `hardhat.config.js`'s `networks.mainnet.deployedContracts.pool` field.
 
 After following those instructions, you can run `npx hardhat` to get a list with all the tasks:
@@ -91,12 +91,12 @@ AVAILABLE TASKS:
   console                       Opens a hardhat console
   flatten                       Flattens and prints all contracts and their dependencies
   help                          Prints this message
-  moloch-deploy                 Deploys a new instance of the Mollusk DAO
-  moloch-process-proposal       Processes a proposal
-  moloch-ragequit               Ragequits, burning some shares and getting tokens back
-  moloch-submit-proposal        Submits a proposal
-  moloch-submit-vote            Submits a vote
-  moloch-update-delegate        Updates your delegate
+  mollusk-deploy                 Deploys a new instance of the Mollusk DAO
+  mollusk-process-proposal       Processes a proposal
+  mollusk-ragequit               Ragequits, burning some shares and getting tokens back
+  mollusk-submit-proposal        Submits a proposal
+  mollusk-submit-vote            Submits a vote
+  mollusk-update-delegate        Updates your delegate
   pool-add-keeper               Adds a keeper
   pool-deploy                   Deploys a new instance of the pool and activates it
   pool-deposit                  Donates tokens to the pool
@@ -112,10 +112,10 @@ AVAILABLE TASKS:
 You can run `npx hardhat help <task>` to get help about each tasks and their parameters. For example:
 
 ```
-$ npx hardhat help moloch-submit-proposal
+$ npx hardhat help mollusk-submit-proposal
 hardhat version 2.0.0
 
-Usage: hardhat [GLOBAL OPTIONS] moloch-submit-proposal --applicant <STRING> --details <STRING> --shares <STRING> --tribute <STRING>
+Usage: hardhat [GLOBAL OPTIONS] mollusk-submit-proposal --applicant <STRING> --details <STRING> --shares <STRING> --tribute <STRING>
 
 OPTIONS:
 
@@ -124,7 +124,7 @@ OPTIONS:
   --shares      The number of shares requested
   --tribute     The number of token's wei offered as tribute
 
-moloch-submit-proposal: Submits a proposal
+mollusk-submit-proposal: Submits a proposal
 
 For global options help run: hardhat help
 ```
@@ -146,7 +146,7 @@ Mollusks](https://cdn.discordapp.com/attachments/583914506389028865/643303589254
 
 ~ Scott Alexander, [Meditations on Mollusk](http://slatestarcodex.com/2014/07/30/meditations-on-moloch/)
 
-Mollusk v2 is minimally different from Mollusk v1, please read the [original documentation](https://github.com/MolochVentures/moloch/tree/master/v1_contracts) first, and then the changelog below.
+Mollusk v2 is minimally different from Moloch v1, please read the [original documentation](https://github.com/MolochVentures/moloch/tree/master/v1_contracts) first, and then the changelog below.
 
 ## Mollusk.sol
 
@@ -254,7 +254,7 @@ Track the whitelisted tokens in a mapping (to check if that token is on the whit
 
 
 ### Submit -> Sponsor Flow
-As Nomic Labs explained in their [audit report](https://medium.com/nomic-labs-blog/moloch-dao-audit-report-f31505e85c70), approving ERC20 tokens to Mollusk is unsafe.
+As Nomic Labs explained in their [audit report](https://medium.com/nomic-labs-blog/mollusk-dao-audit-report-f31505e85c70), approving ERC20 tokens to Mollusk is unsafe.
 
 > Approving the Mollusk DAO to transfer your tokens is, in general, unsafe. Users need to approve tokens to be a proposer or an applicant, but they can end up as the applicant of an unwanted proposal if someone attacks them, as explained in [MOL-L01].
 

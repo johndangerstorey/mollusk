@@ -8,15 +8,15 @@ const verifyBalance = async ({ token, address, expectedBalance }) => {
   assert.equal(balance.toString(), expectedBalance.toString(), `token balance incorrect for ${token.address} with ${address}`)
 }
 
-const verifyInternalBalance = async ({ moloch, token, user, expectedBalance }) => {
-  const balance = await moloch.userTokenBalances.call(user, token.address)
+const verifyInternalBalance = async ({ mollusk, token, user, expectedBalance }) => {
+  const balance = await mollusk.userTokenBalances.call(user, token.address)
   assert.equal(balance.toString(), expectedBalance.toString(), `internal token balance incorrect for user ${user} and token ${token.address}`)
 }
 
-const verifyInternalBalances = async ({ moloch, token, userBalances }) => {
+const verifyInternalBalances = async ({ mollusk, token, userBalances }) => {
   const users = Object.keys(userBalances)
   for (i = 0; i < users.length; i++) {
-    await verifyInternalBalance({ moloch, token, user: users[i], expectedBalance: userBalances[users[i]]})
+    await verifyInternalBalance({ mollusk, token, user: users[i], expectedBalance: userBalances[users[i]]})
   }
 }
 
@@ -27,7 +27,7 @@ const verifyAllowance = async ({ token, owner, spender, expectedAllowance }) => 
 
 const verifyProposal = async (
   {
-    moloch,
+    mollusk,
     proposal,
     proposalId,
     proposer,
@@ -37,12 +37,12 @@ const verifyProposal = async (
     expectedProposalQueueLength = 0
   }
 ) => {
-  const proposalData = await moloch.proposals(proposalId)
+  const proposalData = await mollusk.proposals(proposalId)
 
-  const proposalCount = await moloch.proposalCount()
+  const proposalCount = await mollusk.proposalCount()
   assert.equal(+proposalCount, expectedProposalCount)
 
-  const proposalQueueLength = await moloch.getProposalQueueLength()
+  const proposalQueueLength = await mollusk.getProposalQueueLength()
   assert.equal(+proposalQueueLength, expectedProposalQueueLength)
 
   assert.equal(proposalData.applicant, proposal.applicant)
@@ -64,8 +64,8 @@ const verifyProposal = async (
   assert.equal(proposalData.maxTotalSharesAndLootAtYesVote, 0, 'maxTotalSharesAndLootAtYesVote invalid')
 }
 
-const verifyFlags = async ({ moloch, proposalId, expectedFlags }) => {
-  const actualFlags = await moloch.getProposalFlags(proposalId)
+const verifyFlags = async ({ mollusk, proposalId, expectedFlags }) => {
+  const actualFlags = await mollusk.getProposalFlags(proposalId)
 
   // [sponsored, processed, didPass, cancelled, whitelist, guildkick]
   assert.equal(actualFlags[0], expectedFlags[0], 'sponsored flag incorrect')
@@ -79,15 +79,15 @@ const verifyFlags = async ({ moloch, proposalId, expectedFlags }) => {
 const verifyBalances = async (
   {
     token,
-    moloch, // FIXME rename as slightly misleading
-    expectedMolochBalance,
+    mollusk, // FIXME rename as slightly misleading
+    expectedMolluskBalance,
     applicant,
     expectedApplicantBalance
   }
 ) => {
-  const molochBalance = await token.balanceOf(moloch)
+  const molluskBalance = await token.balanceOf(mollusk)
 
-  assert.equal(molochBalance.toString(), expectedMolochBalance.toString(), `moloch token balance incorrect for ${token.address} with ${moloch}`)
+  assert.equal(molluskBalance.toString(), expectedMolluskBalance.toString(), `mollusk token balance incorrect for ${token.address} with ${mollusk}`)
 
   const applicantBalance = await token.balanceOf(applicant)
   assert.equal(applicantBalance.toString(), expectedApplicantBalance.toString(), `Applicant token balance incorrect for ${token.address} with ${applicant}`)
@@ -95,7 +95,7 @@ const verifyBalances = async (
 
 const verifySubmitVote = async (
   {
-    moloch,
+    mollusk,
     proposalIndex,
     memberAddress,
     expectedVote,
@@ -104,20 +104,20 @@ const verifySubmitVote = async (
     initialNoVotes = 0
   }
 ) => {
-  const proposalId = await moloch.proposalQueue(proposalIndex)
-  const proposalData = await moloch.proposals(proposalId)
+  const proposalId = await mollusk.proposalQueue(proposalIndex)
+  const proposalData = await mollusk.proposals(proposalId)
 
   assert.equal(+proposalData.yesVotes, initialYesVotes + (expectedVote === 1 ? 1 : 0))
   assert.equal(+proposalData.noVotes, initialNoVotes + (expectedVote === 1 ? 0 : 1))
   assert.equal(+proposalData.maxTotalSharesAndLootAtYesVote, expectedMaxSharesAndLootAtYesVote)
 
-  const memberVote = await moloch.getMemberProposalVote(memberAddress, proposalIndex)
+  const memberVote = await mollusk.getMemberProposalVote(memberAddress, proposalIndex)
   assert.equal(+memberVote, expectedVote)
 }
 
 const verifyProcessProposal = async (
   {
-    moloch,
+    mollusk,
     proposalIndex,
     expectedYesVotes = 0,
     expectedNoVotes = 0,
@@ -127,23 +127,23 @@ const verifyProcessProposal = async (
   }
 ) => {
   // flags and proposal data
-  const proposalId = await moloch.proposalQueue(proposalIndex)
-  const proposalData = await moloch.proposals(proposalId)
+  const proposalId = await mollusk.proposalQueue(proposalIndex)
+  const proposalData = await mollusk.proposals(proposalId)
 
   assert.equal(+proposalData.yesVotes, expectedYesVotes, 'proposal yes votes incorrect')
   assert.equal(+proposalData.noVotes, expectedNoVotes, 'proposal no votes incorrect')
   assert.equal(+proposalData.maxTotalSharesAndLootAtYesVote, expectedMaxSharesAndLootAtYesVote, 'total shares at yes vote incorrect')
 
-  const totalShares = await moloch.totalShares()
+  const totalShares = await mollusk.totalShares()
   assert.equal(+totalShares, expectedTotalShares, 'total shares incorrect')
 
-  const totalLoot = await moloch.totalLoot()
+  const totalLoot = await mollusk.totalLoot()
   assert.equal(+totalLoot, expectedTotalLoot, 'total loot incorrect')
 }
 
 const verifyMember = async (
   {
-    moloch,
+    mollusk,
     member,
     expectedDelegateKey = zeroAddress,
     expectedShares = 0,
@@ -154,7 +154,7 @@ const verifyMember = async (
     expectedMemberAddressByDelegateKey = zeroAddress
   }
 ) => {
-  const memberData = await moloch.members(member)
+  const memberData = await mollusk.members(member)
   assert.equal(memberData.delegateKey, expectedDelegateKey, 'delegate key incorrect')
   assert.equal(+memberData.shares, expectedShares, 'expected shares incorrect')
   assert.equal(+memberData.loot, expectedLoot, 'expected loot incorrect')
@@ -162,7 +162,7 @@ const verifyMember = async (
   assert.equal(+memberData.jailed, expectedJailed, 'jailed incorrect')
   assert.equal(+memberData.highestIndexYesVote, expectedHighestIndexYesVote, 'highest index yes vote incorrect')
 
-  const newMemberAddressByDelegateKey = await moloch.memberAddressByDelegateKey(expectedDelegateKey)
+  const newMemberAddressByDelegateKey = await mollusk.memberAddressByDelegateKey(expectedDelegateKey)
   assert.equal(newMemberAddressByDelegateKey, expectedMemberAddressByDelegateKey, 'member address by delegate key incorrect')
 }
 

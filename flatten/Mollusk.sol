@@ -76,14 +76,14 @@ interface IGuildBank  {
     function withdrawToken(IERC20 token, address receiver, uint256 amount) external returns (bool);
 }
 
-// File: contracts/Moloch.sol
+// File: contracts/Mollusk.sol
 
 pragma solidity 0.5.3;
 
 
 
 
-contract Moloch {
+contract Mollusk {
     using SafeMath for uint256;
 
     uint256 public periodDuration;
@@ -163,12 +163,12 @@ contract Moloch {
     uint256[] public proposalQueue;
 
     modifier onlyMember {
-        require(members[msg.sender].shares > 0, "Moloch::onlyMember - not a member");
+        require(members[msg.sender].shares > 0, "Mollusk::onlyMember - not a member");
         _;
     }
 
     modifier onlyDelegate {
-        require(members[memberAddressByDelegateKey[msg.sender]].shares > 0, "Moloch::onlyDelegate - not a delegate");
+        require(members[memberAddressByDelegateKey[msg.sender]].shares > 0, "Mollusk::onlyDelegate - not a delegate");
         _;
     }
 
@@ -184,22 +184,22 @@ contract Moloch {
         uint256 _processingReward,
         IGuildBank _guildBank
     ) public {
-        require(summoner != address(0), "Moloch::constructor - summoner cannot be 0");
-        require(_periodDuration > 0, "Moloch::constructor - _periodDuration cannot be 0");
-        require(_votingPeriodLength > 0, "Moloch::constructor - _votingPeriodLength cannot be 0");
-        require(_votingPeriodLength <= MAX_VOTING_PERIOD_LENGTH, "Moloch::constructor - _votingPeriodLength exceeds limit");
-        require(_gracePeriodLength <= MAX_GRACE_PERIOD_LENGTH, "Moloch::constructor - _gracePeriodLength exceeds limit");
-        require(_emergencyExitWait > 0, "Moloch::constructor - _emergencyExitWait cannot be 0");
-        require(_dilutionBound > 0, "Moloch::constructor - _dilutionBound cannot be 0");
-        require(_dilutionBound <= MAX_DILUTION_BOUND, "Moloch::constructor - _dilutionBound exceeds limit");
-        require(_approvedTokens.length > 0, "Moloch::constructor - need at least one approved token");
-        require(_proposalDeposit >= _processingReward, "Moloch::constructor - _proposalDeposit cannot be smaller than _processingReward");
+        require(summoner != address(0), "Mollusk::constructor - summoner cannot be 0");
+        require(_periodDuration > 0, "Mollusk::constructor - _periodDuration cannot be 0");
+        require(_votingPeriodLength > 0, "Mollusk::constructor - _votingPeriodLength cannot be 0");
+        require(_votingPeriodLength <= MAX_VOTING_PERIOD_LENGTH, "Mollusk::constructor - _votingPeriodLength exceeds limit");
+        require(_gracePeriodLength <= MAX_GRACE_PERIOD_LENGTH, "Mollusk::constructor - _gracePeriodLength exceeds limit");
+        require(_emergencyExitWait > 0, "Mollusk::constructor - _emergencyExitWait cannot be 0");
+        require(_dilutionBound > 0, "Mollusk::constructor - _dilutionBound cannot be 0");
+        require(_dilutionBound <= MAX_DILUTION_BOUND, "Mollusk::constructor - _dilutionBound exceeds limit");
+        require(_approvedTokens.length > 0, "Mollusk::constructor - need at least one approved token");
+        require(_proposalDeposit >= _processingReward, "Mollusk::constructor - _proposalDeposit cannot be smaller than _processingReward");
 
         depositToken = IERC20(_approvedTokens[0]);
 
         for (uint256 i=0; i < _approvedTokens.length; i++) {
-            require(_approvedTokens[i] != address(0), "Moloch::constructor - _approvedToken cannot be 0");
-            require(!tokenWhitelist[_approvedTokens[i]], "Moloch::constructor - duplicate approved token");
+            require(_approvedTokens[i] != address(0), "Mollusk::constructor - _approvedToken cannot be 0");
+            require(!tokenWhitelist[_approvedTokens[i]], "Mollusk::constructor - duplicate approved token");
             tokenWhitelist[_approvedTokens[i]] = true;
             approvedTokens.push(IERC20(_approvedTokens[i]));
         }
@@ -234,11 +234,11 @@ contract Moloch {
     )
         public
     {
-        require(tokenWhitelist[tributeToken], "Moloch::submitProposal - tributeToken is not whitelisted");
-        require(tokenWhitelist[paymentToken], "Moloch::submitProposal - payment is not whitelisted");
-        require(applicant != address(0), "Moloch::submitProposal - applicant cannot be 0");
+        require(tokenWhitelist[tributeToken], "Mollusk::submitProposal - tributeToken is not whitelisted");
+        require(tokenWhitelist[paymentToken], "Mollusk::submitProposal - payment is not whitelisted");
+        require(applicant != address(0), "Mollusk::submitProposal - applicant cannot be 0");
 
-        require(IERC20(tributeToken).transferFrom(msg.sender, address(this), tributeOffered), "Moloch::submitProposal - tribute token transfer failed");
+        require(IERC20(tributeToken).transferFrom(msg.sender, address(this), tributeOffered), "Mollusk::submitProposal - tribute token transfer failed");
 
         bool[6] memory flags;
 
@@ -264,8 +264,8 @@ contract Moloch {
     }
 
     function submitWhitelistProposal(address tokenToWhitelist, string memory details) public {
-        require(tokenToWhitelist != address(0), "Moloch::submitWhitelistProposal - must provide token address");
-        require(!tokenWhitelist[tokenToWhitelist], "Moloch::submitWhitelistProposal - can't already have whitelisted the token");
+        require(tokenToWhitelist != address(0), "Mollusk::submitWhitelistProposal - must provide token address");
+        require(!tokenWhitelist[tokenToWhitelist], "Mollusk::submitWhitelistProposal - can't already have whitelisted the token");
 
         bool[6] memory flags;
         flags[4] = true;
@@ -294,7 +294,7 @@ contract Moloch {
     }
 
     function submitGuildKickProposal(address memberToKick, string memory details) public {
-        require(members[memberToKick].shares > 0, "Moloch::submitGuildKickProposal - member must have at least one share");
+        require(members[memberToKick].shares > 0, "Mollusk::submitGuildKickProposal - member must have at least one share");
 
         bool[6] memory flags;
         flags[5] = true;
@@ -322,12 +322,12 @@ contract Moloch {
     }
 
     function sponsorProposal(uint256 proposalId) public onlyDelegate {
-        require(depositToken.transferFrom(msg.sender, address(this), proposalDeposit), "Moloch::submitProposal - proposal deposit token transfer failed");
+        require(depositToken.transferFrom(msg.sender, address(this), proposalDeposit), "Mollusk::submitProposal - proposal deposit token transfer failed");
 
         Proposal memory proposal = proposals[proposalId];
 
-        require(!proposal.flags[0], "Moloch::sponsorProposal - proposal has already been sponsored");
-        require(!proposal.flags[3], "Moloch::sponsorProposal - proposal has been cancelled");
+        require(!proposal.flags[0], "Mollusk::sponsorProposal - proposal has already been sponsored");
+        require(!proposal.flags[3], "Mollusk::sponsorProposal - proposal has been cancelled");
 
         if (proposal.flags[4]) {
             require(!proposedToWhitelist[address(proposal.tributeToken)]);
@@ -336,7 +336,7 @@ contract Moloch {
             require(!proposedToKick[proposal.applicant]);
             proposedToKick[proposal.applicant] = true;
         } else {
-            require(totalShares.add(totalSharesRequested).add(proposal.sharesRequested) <= MAX_NUMBER_OF_SHARES, "Moloch::submitProposal - too many shares requested");
+            require(totalShares.add(totalSharesRequested).add(proposal.sharesRequested) <= MAX_NUMBER_OF_SHARES, "Mollusk::submitProposal - too many shares requested");
             totalSharesRequested = totalSharesRequested.add(proposal.sharesRequested);
         }
 
@@ -358,17 +358,17 @@ contract Moloch {
         address memberAddress = memberAddressByDelegateKey[msg.sender];
         Member storage member = members[memberAddress];
 
-        require(proposalIndex < proposalQueue.length, "Moloch::submitVote - proposal does not exist");
+        require(proposalIndex < proposalQueue.length, "Mollusk::submitVote - proposal does not exist");
         Proposal storage proposal = proposals[proposalQueue[proposalIndex]];
 
-        require(uintVote < 3, "Moloch::submitVote - uintVote must be less than 3");
+        require(uintVote < 3, "Mollusk::submitVote - uintVote must be less than 3");
         Vote vote = Vote(uintVote);
 
-        require(proposal.flags[0], "Moloch::submitVote - proposal has not been sponsored");
-        require(getCurrentPeriod() >= proposal.startingPeriod, "Moloch::submitVote - voting period has not started");
-        require(!hasVotingPeriodExpired(proposal.startingPeriod), "Moloch::submitVote - proposal voting period has expired");
-        require(proposal.votesByMember[memberAddress] == Vote.Null, "Moloch::submitVote - member has already voted on this proposal");
-        require(vote == Vote.Yes || vote == Vote.No, "Moloch::submitVote - vote must be either Yes or No");
+        require(proposal.flags[0], "Mollusk::submitVote - proposal has not been sponsored");
+        require(getCurrentPeriod() >= proposal.startingPeriod, "Mollusk::submitVote - voting period has not started");
+        require(!hasVotingPeriodExpired(proposal.startingPeriod), "Mollusk::submitVote - proposal voting period has expired");
+        require(proposal.votesByMember[memberAddress] == Vote.Null, "Mollusk::submitVote - member has already voted on this proposal");
+        require(vote == Vote.Yes || vote == Vote.No, "Mollusk::submitVote - vote must be either Yes or No");
 
         proposal.votesByMember[memberAddress] = vote;
 
@@ -391,12 +391,12 @@ contract Moloch {
     }
 
     function processProposal(uint256 proposalIndex) public {
-        require(proposalIndex < proposalQueue.length, "Moloch::processProposal - proposal does not exist");
+        require(proposalIndex < proposalQueue.length, "Mollusk::processProposal - proposal does not exist");
         Proposal storage proposal = proposals[proposalQueue[proposalIndex]];
 
-        require(getCurrentPeriod() >= proposal.startingPeriod.add(votingPeriodLength).add(gracePeriodLength), "Moloch::processProposal - proposal is not ready to be processed");
-        require(proposal.flags[1] == false, "Moloch::processProposal - proposal has already been processed");
-        require(proposalIndex == 0 || proposals[proposalQueue[proposalIndex.sub(1)]].flags[1], "Moloch::processProposal - previous proposal must be processed");
+        require(getCurrentPeriod() >= proposal.startingPeriod.add(votingPeriodLength).add(gracePeriodLength), "Mollusk::processProposal - proposal is not ready to be processed");
+        require(proposal.flags[1] == false, "Mollusk::processProposal - proposal has already been processed");
+        require(proposalIndex == 0 || proposals[proposalQueue[proposalIndex.sub(1)]].flags[1], "Mollusk::processProposal - previous proposal must be processed");
 
         proposal.flags[1] = true;
         totalSharesRequested = totalSharesRequested.sub(proposal.sharesRequested);
@@ -447,12 +447,12 @@ contract Moloch {
 
                 require(
                     proposal.tributeToken.transfer(address(guildBank), proposal.tributeOffered),
-                    "Moloch::processProposal - token transfer to guild bank failed"
+                    "Mollusk::processProposal - token transfer to guild bank failed"
                 );
 
                 require(
                     guildBank.withdrawToken(proposal.paymentToken, proposal.applicant, proposal.paymentRequested),
-                    "Moloch::processProposal - token payment to applicant failed"
+                    "Mollusk::processProposal - token payment to applicant failed"
                 );
             }
 
@@ -461,7 +461,7 @@ contract Moloch {
             if (!emergencyProcessing) {
                 require(
                     proposal.tributeToken.transfer(proposal.proposer, proposal.tributeOffered),
-                    "Moloch::processProposal - failing vote token transfer failed"
+                    "Mollusk::processProposal - failing vote token transfer failed"
                 );
             }
         }
@@ -476,12 +476,12 @@ contract Moloch {
 
         require(
             depositToken.transfer(msg.sender, processingReward),
-            "Moloch::processProposal - failed to send processing reward to msg.sender"
+            "Mollusk::processProposal - failed to send processing reward to msg.sender"
         );
 
         require(
             depositToken.transfer(proposal.sponsor, proposalDeposit.sub(processingReward)),
-            "Moloch::processProposal - failed to return proposal deposit to sponsor"
+            "Mollusk::processProposal - failed to return proposal deposit to sponsor"
         );
     }
 
@@ -491,10 +491,10 @@ contract Moloch {
 
     function safeRagequit(uint256 sharesToBurn, IERC20[] memory tokenList) public onlyMember {
         for (uint256 i=0; i < tokenList.length; i++) {
-            require(tokenWhitelist[address(tokenList[i])], "Moloch::safeRequit - token must be whitelisted");
+            require(tokenWhitelist[address(tokenList[i])], "Mollusk::safeRequit - token must be whitelisted");
 
             if (i > 0) {
-                require(tokenList[i] > tokenList[i-1], "Moloch::safeRagequit - tokenList must be unique and in ascending order");
+                require(tokenList[i] > tokenList[i-1], "Mollusk::safeRagequit - tokenList must be unique and in ascending order");
             }
         }
 
@@ -506,16 +506,16 @@ contract Moloch {
 
         Member storage member = members[msg.sender];
 
-        require(member.shares >= sharesToBurn, "Moloch::ragequit - insufficient shares");
+        require(member.shares >= sharesToBurn, "Mollusk::ragequit - insufficient shares");
 
-        require(canRagequit(member.highestIndexYesVote), "Moloch::ragequit - cant ragequit until highest index proposal member voted YES on is processed");
+        require(canRagequit(member.highestIndexYesVote), "Mollusk::ragequit - cant ragequit until highest index proposal member voted YES on is processed");
 
         member.shares = member.shares.sub(sharesToBurn);
         totalShares = totalShares.sub(sharesToBurn);
 
         require(
             guildBank.withdraw(msg.sender, sharesToBurn, initialTotalShares, approvedTokens),
-            "Moloch::ragequit - withdrawal of tokens from guildBank failed"
+            "Mollusk::ragequit - withdrawal of tokens from guildBank failed"
         );
 
         emit Ragequit(msg.sender, sharesToBurn);
@@ -523,25 +523,25 @@ contract Moloch {
 
     function cancelProposal(uint256 proposalId) public {
         Proposal storage proposal = proposals[proposalId];
-        require(!proposal.flags[0], "Moloch::cancelProposal - proposal has already been sponsored");
-        require(msg.sender == proposal.proposer, "Moloch::cancelProposal - only the proposer can cancel");
+        require(!proposal.flags[0], "Mollusk::cancelProposal - proposal has already been sponsored");
+        require(msg.sender == proposal.proposer, "Mollusk::cancelProposal - only the proposer can cancel");
 
         proposal.flags[3] = true;
 
         require(
             proposal.tributeToken.transfer(proposal.proposer, proposal.tributeOffered),
-            "Moloch::processProposal - failed to return tribute to proposer"
+            "Mollusk::processProposal - failed to return tribute to proposer"
         );
 
         emit CancelProposal(proposalId, msg.sender);
     }
 
     function updateDelegateKey(address newDelegateKey) public onlyMember {
-        require(newDelegateKey != address(0), "Moloch::updateDelegateKey - newDelegateKey cannot be 0");
+        require(newDelegateKey != address(0), "Mollusk::updateDelegateKey - newDelegateKey cannot be 0");
 
         if (newDelegateKey != msg.sender) {
-            require(!members[newDelegateKey].exists, "Moloch::updateDelegateKey - cant overwrite existing members");
-            require(!members[memberAddressByDelegateKey[newDelegateKey]].exists, "Moloch::updateDelegateKey - cant overwrite existing delegate keys");
+            require(!members[newDelegateKey].exists, "Mollusk::updateDelegateKey - cant overwrite existing members");
+            require(!members[memberAddressByDelegateKey[newDelegateKey]].exists, "Mollusk::updateDelegateKey - cant overwrite existing delegate keys");
         }
 
         Member storage member = members[msg.sender];
@@ -565,7 +565,7 @@ contract Moloch {
     }
 
     function canRagequit(uint256 highestIndexYesVote) public view returns (bool) {
-        require(highestIndexYesVote < proposalQueue.length, "Moloch::canRagequit - proposal does not exist");
+        require(highestIndexYesVote < proposalQueue.length, "Mollusk::canRagequit - proposal does not exist");
         return proposals[proposalQueue[highestIndexYesVote]].flags[1]; // processed
     }
 
@@ -574,8 +574,8 @@ contract Moloch {
     }
 
     function getMemberProposalVote(address memberAddress, uint256 proposalIndex) public view returns (Vote) {
-        require(members[memberAddress].exists, "Moloch::getMemberProposalVote - member doesn't exist");
-        require(proposalIndex < proposalQueue.length, "Moloch::getMemberProposalVote - proposal doesn't exist");
+        require(members[memberAddress].exists, "Mollusk::getMemberProposalVote - member doesn't exist");
+        require(proposalIndex < proposalQueue.length, "Mollusk::getMemberProposalVote - proposal doesn't exist");
         return proposals[proposalQueue[proposalIndex]].votesByMember[memberAddress];
     }
 }
